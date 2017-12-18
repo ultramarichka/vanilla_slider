@@ -1,0 +1,25 @@
+#outer_circle {
+  width: 160px;
+  height: 160px;
+  -webkit-border-radius: 80px;
+  -moz-border-radius: 80px;
+  border-radius: 80px;
+  background: #d3d3d3;
+}
+#inner_circle {
+  width: 120px;
+  height: 120px;
+  -webkit-border-radius: 60px;
+  -moz-border-radius: 60px;
+  border-radius: 60px;
+  background: white;
+}
+#handle {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #a8a8a8;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background: white;
+}
