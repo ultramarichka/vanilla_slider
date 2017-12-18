@@ -2,9 +2,13 @@
 document.body.onload = createSlider(document.body,100);
 
 function createSlider(parent, R){
-    var r = R*0.8; 
-    var x = R+r;  //?
-    var y = R;
+    var r = R*0.8;
+    var pi = Math.PI; 
+    var fi = -pi/2; //global?
+    var x0 = (r+(R-r)/2)*Math.cos(pi/4);  
+    var y0 = (r+(R-r)/2)*Math.sin(pi/4);
+    var dh = (R - r) + 8; 
+   
 
     var div_center = document.createElement("div");
     div_center.id = "center";
@@ -47,15 +51,20 @@ function createSlider(parent, R){
 
     var div_handle = document.createElement("div");
     div_handle.id = "handle";
-    div_handle.style.width= (R-r)+"px";
-    div_handle.style.height= (R-r)+"px";
-    div_handle.style.borderRadius = (R-r)/2+"px";
+    div_handle.style.width= dh+"px";
+    div_handle.style.height= dh +"px";
+    div_handle.style.borderRadius = dh/2+"px";
     div_handle.style.background = "red";
     div_handle.style.border = "1px solid #a8a8a8";
     div_handle.style.position = "relative";
-   // div_handle.style.left = x+"px";
-    div_handle.style.top= (R-r)/2 +2+"px";
+    div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi) - dh/2 +"px";  //x = r*cos(fi); 
+    div_handle.style.top= r + (r+(R-r)/2)*Math.sin(fi) - dh/2 +"px";
     div_iCircle.appendChild(div_handle);
-    
+   
  
+  }
+
+  function handlePOsition(value){
+
+  
   }
