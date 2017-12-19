@@ -5,10 +5,12 @@ function demo(){
 }
 
 function Slider(parent, R){
+  var self = this;
   this.r = R*0.8;
   this.fi = 0; 
   this.dh = (R - this.r) + 8; 
   this.parent = parent;
+  self.beingDragged = false;
 
   var r = this.r;
   var dh = this.dh;
@@ -38,7 +40,11 @@ function Slider(parent, R){
   this.div_iCircle.style.position = "relative";
   this.div_iCircle.style.left = (R-r)+"px";
   this.div_iCircle.style.top= (R-r)+"px";
+  // find center of the circle in widow coordinates
+  // nice approach from here https://stackoverflow.com/a/33347664/8325614
   this.div_oCircle.appendChild(this.div_iCircle);
+  var x0 = self.div_iCircle.getBoundingClientRect().left;
+  var y0 = self.div_iCircle.getBoundingClientRect().top;
 
   this.div_handle = document.createElement("div");
   this.div_handle.id = "handle";
@@ -48,10 +54,9 @@ function Slider(parent, R){
   this.div_handle.style.background = "red";
   this.div_handle.style.border = "1px solid #a8a8a8";
   this.div_handle.style.position = "relative";
-  
   this.div_iCircle.appendChild(this.div_handle);
 
-  var self = this;
+  
   
   self.update = function(fi){
     self.fi = fi;
@@ -66,23 +71,41 @@ function Slider(parent, R){
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
     if( e.target !== self.div_oCircle) return;
     // find mouse coordinates
-    var x = e.pageX ;
-    var y = e.pageY ;
-    // find center of the circle in widow coordinates
-    // nice approach from here https://stackoverflow.com/a/33347664/8325614
-    var x0 = self.div_iCircle.getBoundingClientRect().left;
-    var y0 = self.div_iCircle.getBoundingClientRect().top;
+    var x = e.pageX;
+    var y = e.pageY;
+    //move handle to the coordinates
+    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
+    self.update(-fi+Math.PI/2);
+  }
+
+  function drag(e){
+    if (!e){e = window.event;} 
+    if(!self.beingDragged){return;}
+    // find mouse coordinates
+    var x = e.pageX;
+    var y = e.pageY;
     //move handle to the coordinates
     fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
     self.update(-fi+Math.PI/2);
   } 
 
-  function drag(){} 
+  function enableDrag(e){
+    self.beingDragged = true;
+    window.onmousemove = drag;
+    drag(e);
+  } 
+
+  function disableDrag (){
+    self.beingDragged = false;
+    window.onmousemove = undefined;
+  }
 
   // -----------ATTACH CALLBACKS------------
+  
   this.div_oCircle.onclick = click;
+  this.div_handle.onmousedown = enableDrag;
 
-
+  window.onmouseup = disableDrag; 
 
 }
 
