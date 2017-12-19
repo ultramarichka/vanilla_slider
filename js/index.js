@@ -6,7 +6,6 @@ function demo(){
 
 function Slider(parent, R){
   this.r = R*0.8;
-  this.pi = Math.PI; 
   this.fi = 0; 
   this.dh = (R - this.r) + 8; 
   this.parent = parent;
@@ -49,11 +48,17 @@ function Slider(parent, R){
   this.div_handle.style.background = "red";
   this.div_handle.style.border = "1px solid #a8a8a8";
   this.div_handle.style.position = "relative";
-  this.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi) - dh/2 +"px";  //x = r*cos(fi); 
-  this.div_handle.style.top= r + (r+(R-r)/2)*Math.sin(fi) - dh/2 +"px";
+  
   this.div_iCircle.appendChild(this.div_handle);
 
   var self = this;
+  
+  self.update = function(fi){
+    self.fi = fi;
+    self.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi) - dh/2 +"px";  //x = r*cos(fi); 
+    self.div_handle.style.top= r + (r+(R-r)/2)*Math.sin(fi) - dh/2 +"px";
+  }
+  self.update(0);
 
   // -----------CALLBACKS--------------------
   function click(e){
@@ -68,8 +73,8 @@ function Slider(parent, R){
     var x0 = self.div_iCircle.getBoundingClientRect().left;
     var y0 = self.div_iCircle.getBoundingClientRect().top;
     //move handle to the coordinates
-    self.div_handle.style.left = x - x0 - dh/2 + "px";
-    self.div_handle.style.top = y - y0 - dh/2 + "px";
+    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
+    self.update(-fi+Math.PI/2);
   } 
 
   function drag(){} 
