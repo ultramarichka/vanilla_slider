@@ -52,7 +52,33 @@ function Slider(parent, R){
   this.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi) - dh/2 +"px";  //x = r*cos(fi); 
   this.div_handle.style.top= r + (r+(R-r)/2)*Math.sin(fi) - dh/2 +"px";
   this.div_iCircle.appendChild(this.div_handle);
+
+  var self = this;
+
+  // -----------CALLBACKS--------------------
+  function click(e){
+    if (!e){e = window.event;}
+    // find mouse coordinates
+    var x = e.pageX ;
+    var y = e.pageY ;
+    // find center of the circle in widow coordinates
+    var x0 = self.div_iCircle.getBoundingClientRect().left;
+    var y0 = self.div_iCircle.getBoundingClientRect().top;
+    //move handle to the coordinates
+    self.div_handle.style.left = x - x0 - dh/2 + "px";
+    self.div_handle.style.top = y - y0 - dh/2 + "px";
+  } 
+
+  function drag(){} 
+
+  // -----------ATTACH CALLBACKS------------
+  this.div_oCircle.onclick = click;
+
+
+
 }
+
+
 
   
 
