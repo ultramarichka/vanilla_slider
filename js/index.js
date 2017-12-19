@@ -57,11 +57,14 @@ function Slider(parent, R){
 
   // -----------CALLBACKS--------------------
   function click(e){
-    if (!e){e = window.event;}
+    if (!e){e = window.event;} 
+    //mask the inner circle https://stackoverflow.com/a/1369080/8325614
+    if( e.target !== self.div_oCircle) return;
     // find mouse coordinates
     var x = e.pageX ;
     var y = e.pageY ;
     // find center of the circle in widow coordinates
+    // nice approach from here https://stackoverflow.com/a/33347664/8325614
     var x0 = self.div_iCircle.getBoundingClientRect().left;
     var y0 = self.div_iCircle.getBoundingClientRect().top;
     //move handle to the coordinates
