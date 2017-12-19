@@ -2,7 +2,7 @@
    div#values, div#val_1, ...
 2. DOne - Make circles in css,
 3. Add js
-   - add coordinates dependency for #handle
+   Done - add coordinates dependency for #handle
 
    ? how to make not clickable space(corners of the rectangle) in a div#slider but not in the circle
    * What events are we going to listen to
@@ -20,8 +20,8 @@
   
 4. Fix bugs
 5. Add style: colors, lines etc
-6. Refactor to create all DOM elements with a single JS function call
-7. Maybe: refactor into a class.
+6. Done - Refactor to create all DOM elements with a single JS function call
+7. Refactor into a class.
 8. Centralize #slider
 9. Compatibilities w/other browsers (ex., -webkit-border-radius: 80px; ...)
 
