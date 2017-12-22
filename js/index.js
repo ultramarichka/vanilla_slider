@@ -6,6 +6,7 @@ function demo(){
 }
 
 function Slider(container, R, min_value, max_value, step, color){
+  
   var self = this;
   this.r = R*0.8;
   self.fi0 = -Math.PI/2;
@@ -33,6 +34,7 @@ function Slider(container, R, min_value, max_value, step, color){
   this.div_oCircle.style.opacity = "0.6";
   this.div_slider.appendChild(this.div_oCircle);
 
+  //used cheating variant of "conic-gradient" via linear-gradient https://stackoverflow.com/a/22859559/8325614
   //right half-circle hover
   this.div_oCircleHover = document.createElement("div");
   this.div_oCircleHover.style.width=R+"px";
@@ -113,7 +115,9 @@ function Slider(container, R, min_value, max_value, step, color){
  }
 
   function drag(e){
-    if (!e){e = window.event;} 
+    if (!e){
+      console.log(e);
+      e = window.event;} 
     if(!self.beingDragged){return;}
     // find mouse coordinates
     var x = e.pageX;
@@ -146,6 +150,74 @@ function Slider(container, R, min_value, max_value, step, color){
     window.onmousemove = undefined;
   }
   
+  //------TOUCH CALLBACKS-------
+  function touchStart(e){
+    e.preventDefault();
+    if (!e){e = window.event;} 
+    //mask the inner circle https://stackoverflow.com/a/1369080/8325614
+    if( e.target !== self.div_oCircle && e.target == self.div_oCircle && e.target !== self.div_oCircleHover && e.target !== self.div_oCircleHoverLeft) return;
+    
+    var touches = e.changedTouches;      
+    // find finger's coordinates
+    var x = e.changedTouches[0].pageX;
+    var y = e.changedTouches[0].pageY;
+    //move handle to the coordinates
+    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
+    self.update(-fi+ Math.PI);
+    //it doesn't work for Chrome at all -> add -prefixes-
+    if((fi + Math.PI) < Math.PI){
+    self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
+    self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
+    }
+    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
+      self.div_oCircleHover.style.background = "";
+      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
+    }
+
+    if (e.target == self.div_handle){
+      self.div_handle.addEventListener("touchmove", enableTouchDrag, false);
+      self.div_handle.addEventListener("touchend", disableTouchDrag, false);
+    }
+  }
+
+  
+  function touchDrag(e){
+    if (!e){
+      console.log(e);
+      e = window.event;} 
+    if(!self.beingDragged){return;}
+    // find mouse coordinates
+    var x = e.changedTouches[0].pageX;
+    var y = e.changedTouches[0].pageY;
+   
+    //move handle to the coordinates
+    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
+    self.update(-(fi + Math.PI));  
+   
+    if((fi + Math.PI) < Math.PI){
+      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
+      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
+    }
+    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
+      self.div_oCircleHover.style.background = "";
+      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
+    }
+    
+  
+  } 
+ 
+
+  function enableTouchDrag(e){
+    e.preventDefault();
+    self.beingDragged = true;
+    touchDrag(e);
+  }
+  function disableTouchDrag(e){
+    e.preventDefault();
+    self.beingDragged = false;
+    self.div_handle.removeEventListener("touchmove", enableTouchDrag, false);
+  }
+ 
 
   // -----------ATTACH CALLBACKS------------
   
@@ -156,7 +228,9 @@ function Slider(container, R, min_value, max_value, step, color){
 
   window.onmouseup = disableDrag; 
 
-  
+  this.div_oCircle.addEventListener("touchstart", touchStart, false);
+  this.div_handle.addEventListener("touchstart", touchStart, false);
+
   /*touch events always target the element where that touch STARTED, while mouse events target 
    the element currently under the mouse cursor.
 
