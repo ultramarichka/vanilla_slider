@@ -2,24 +2,27 @@ document.body.onload = demo();
 
 //??how to make opacity in linear-gradient if I set color here
 function demo(){
-  new Slider(document.body, 100, 0, 750, 1, '#fbe5f7');
+  new Slider(document.body, 100, 1000, 0, 50, '#fbe5f7');
 }
 
-function Slider(container, R, min_value, max_value, step, color){
+function Slider(container, R, max_value, min_value, step, color){
   
   var self = this;
   this.r = R*0.8;
   self.fi0 = -Math.PI/2;
   self.fi = 0 ; 
-  
   this.dh = (R - this.r) + 8; 
   this.container = container;
   self.beingDragged = false;
+ 
+  this.fi_step = 2*Math.PI * step /(max_value - min_value) ;
+  this.value1 = -(self.fi-Math.PI)/(2*Math.PI) *(max_value - min_value);
 
   var r = this.r;
   var dh = this.dh;
   var fi = self.fi;
   var fi0 = self.fi0; 
+  var fi_step = self.fi_step;
 
   this.div_slider = document.createElement("div");
   this.div_slider.id = "slider";
@@ -85,13 +88,39 @@ function Slider(container, R, min_value, max_value, step, color){
   this.div_handle.style.zIndex = "4"; 
   this.div_iCircle.appendChild(this.div_handle);
 
-  
+  this.values = document.createElement("div");
+  this.container.appendChild(this.values);
+
+  this.value_1 = document.createElement("div");
+  this.value1 = (5*Math.PI/4)/(2*Math.PI) *(max_value - min_value);
+  this.valueContent_1 = document.createTextNode(this.value1 + " of smth");
+  this.value_1.appendChild(this.valueContent_1);  
+  this.container.appendChild(this.value_1);
   
   self.update = function(fi){
     self.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi + fi0) - dh/2 +"px";  //x = r*cos(fi); x-coordinate of the #handle
     self.div_handle.style.top= r + (r+(R-r)/2)*Math.sin(fi +fi0) - dh/2 +"px";   //y - coordinate of the #handle
   }
   self.update(5*Math.PI/4);
+
+  function moveHandle(x, y){
+    //move handle to the coordinates
+    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
+    fi = - Math.round(-(fi + Math.PI) / fi_step) * fi_step -Math.PI; 
+    self.value1 = -(fi-Math.PI)/(2*Math.PI) *(max_value - min_value);
+    console.log(self.value1, "value1");
+   
+    self.update(-(fi + Math.PI));
+
+    if((fi + Math.PI) < Math.PI){
+      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
+      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
+    }
+    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
+      self.div_oCircleHover.style.background = "";
+      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
+    }
+  }
 
   // -----------CALLBACKS--------------------
   function click(e){
@@ -101,18 +130,8 @@ function Slider(container, R, min_value, max_value, step, color){
     // find mouse coordinates
     var x = e.pageX;
     var y = e.pageY;
-    //move handle to the coordinates
-    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
-    self.update(-(fi + Math.PI));
-    if((fi + Math.PI) < Math.PI){
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
-    }
-    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
-      self.div_oCircleHover.style.background = "";
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
-    }
- }
+    moveHandle(x, y);
+  }
 
   function drag(e){
     if (!e){
@@ -122,21 +141,7 @@ function Slider(container, R, min_value, max_value, step, color){
     // find mouse coordinates
     var x = e.pageX;
     var y = e.pageY;
-   
-    //move handle to the coordinates
-    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
-    self.update(-(fi + Math.PI));  
-   
-    if((fi + Math.PI) < Math.PI){
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
-    }
-    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
-      self.div_oCircleHover.style.background = "";
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
-    }
-    
-  
+    moveHandle(x, y) 
   } 
 
   function enableDrag(e){
@@ -161,52 +166,18 @@ function Slider(container, R, min_value, max_value, step, color){
     // find finger's coordinates
     var x = e.changedTouches[0].pageX;
     var y = e.changedTouches[0].pageY;
-    //move handle to the coordinates
-    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
-    self.update(-fi+ Math.PI);
-    //it doesn't work for Chrome at all -> add -prefixes-
-    if((fi + Math.PI) < Math.PI){
-    self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-    self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
-    }
-    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
-      self.div_oCircleHover.style.background = "";
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
-    }
-
-    if (e.target == self.div_handle){
-      self.div_handle.addEventListener("touchmove", enableTouchDrag, false);
-      self.div_handle.addEventListener("touchend", disableTouchDrag, false);
-    }
+    moveHandle(x, y);
   }
-
   
   function touchDrag(e){
-    if (!e){
-      console.log(e);
-      e = window.event;} 
+    if (!e){ e = window.event;} 
     if(!self.beingDragged){return;}
-    // find mouse coordinates
+    // find finger coordinates
     var x = e.changedTouches[0].pageX;
     var y = e.changedTouches[0].pageY;
-   
-    //move handle to the coordinates
-    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
-    self.update(-(fi + Math.PI));  
-   
-    if((fi + Math.PI) < Math.PI){
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
-    }
-    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
-      self.div_oCircleHover.style.background = "";
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
-    }
-    
-  
+    moveHandle(x, y);
   } 
  
-
   function enableTouchDrag(e){
     e.preventDefault();
     self.beingDragged = true;
