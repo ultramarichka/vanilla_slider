@@ -1,28 +1,37 @@
 document.body.onload = demo();
 
+
+  
 //??how to make opacity in linear-gradient if I set color here
+//not-rgb notation is not supported in safari https://css-tricks.com/thing-know-gradients-transparent-black/
 function demo(){
-  new Slider(document.body, 100, 1000, 0, 50, '#fbe5f7');
+  var valueContainer = document.createElement("div");
+  document.body.appendChild(valueContainer);
+
+  var sliderContainer = document.createElement("div");
+  document.body.appendChild(sliderContainer);
+  new Slider(sliderContainer, 100, 1000, 0, 50, '#fbe5f7', valueContainer); 
 }
 
-function Slider(container, R, max_value, min_value, step, color){
+function Slider(container, R, max_value, min_value, step, color, valueContainer){
   
   var self = this;
   this.r = R*0.8;
-  self.fi0 = -Math.PI/2;
+  self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ; 
-  this.dh = (R - this.r) + 8; 
+  var dir = 1; //direction of psi: "+1" - clockwise, "-1" - anticlockwise
+  this.dh = (R - this.r) + 8; //#handle size
   this.container = container;
   self.beingDragged = false;
  
   this.fi_step = 2*Math.PI * step /(max_value - min_value) ;
-  this.value1 = -(self.fi-Math.PI)/(2*Math.PI) *(max_value - min_value);
 
   var r = this.r;
   var dh = this.dh;
   var fi = self.fi;
   var fi0 = self.fi0; 
   var fi_step = self.fi_step;
+  
 
   this.div_slider = document.createElement("div");
   this.div_slider.id = "slider";
@@ -44,20 +53,20 @@ function Slider(container, R, max_value, min_value, step, color){
   this.div_oCircleHover.style.height=2*R+"px";
   this.div_oCircleHover.style.borderRadius = R+"px 0 0 "+R+"px";
   this.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px)";
-  this.div_oCircleHover.style.zIndex = "1";
+  this.div_oCircleHover.style.zIndex = "2";
   this.div_oCircle.appendChild(this.div_oCircleHover);
   
-  //left half-circle hover
-  this.div_oCircleHoverLeft = document.createElement("div");
-  this.div_oCircleHoverLeft.style.width=R+"px";
-  this.div_oCircleHoverLeft.style.height=2*R+"px";
-  this.div_oCircleHoverLeft.style.right=-R+"px";
-  this.div_oCircleHoverLeft.style.top=-2*R+"px";
-  this.div_oCircleHoverLeft.style.borderRadius = "0 "+R+"px "+R+"px 0";
-  this.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-  this.div_oCircleHoverLeft.style.position = "relative";
-  this.div_oCircleHoverLeft.style.zIndex = "2";
-  this.div_oCircle.appendChild(this.div_oCircleHoverLeft);
+  //right half-circle hover
+  this.div_oCircleHoverRight = document.createElement("div");
+  this.div_oCircleHoverRight.style.width=R+"px";
+  this.div_oCircleHoverRight.style.height=2*R+"px";
+  this.div_oCircleHoverRight.style.right=-R+"px";
+  this.div_oCircleHoverRight.style.top=-2*R+"px";
+  this.div_oCircleHoverRight.style.borderRadius = "0 "+R+"px "+R+"px 0";
+  this.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
+  this.div_oCircleHoverRight.style.position = "relative";
+  this.div_oCircleHoverRight.style.zIndex = "3";
+  this.div_oCircle.appendChild(this.div_oCircleHoverRight);
 
   //mask
   this.div_iCircle = document.createElement("div");
@@ -66,10 +75,11 @@ function Slider(container, R, max_value, min_value, step, color){
   this.div_iCircle.style.height= 2*r+"px";
   this.div_iCircle.style.borderRadius = r+"px";
   this.div_iCircle.style.background = "white";
+  //this.div_iCircle.style.opacity = "0.6";
   this.div_iCircle.style.position = "relative";
   this.div_iCircle.style.left = (R-r)+"px";
   this.div_iCircle.style.top= (R-r)+"px";
-  this.div_iCircle.style.zIndex = "3"; 
+  this.div_iCircle.style.zIndex = "4"; 
   this.div_oCircleHover.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
   // nice approach from here https://stackoverflow.com/a/33347664/8325614
@@ -85,40 +95,102 @@ function Slider(container, R, max_value, min_value, step, color){
   this.div_handle.style.background = "red";
   this.div_handle.style.border = "1px solid #a8a8a8";
   this.div_handle.style.position = "relative";
-  this.div_handle.style.zIndex = "4"; 
+  this.div_handle.style.zIndex = "5"; 
   this.div_iCircle.appendChild(this.div_handle);
-
-  this.values = document.createElement("div");
-  this.container.appendChild(this.values);
-
-  this.value_1 = document.createElement("div");
-  this.value1 = (5*Math.PI/4)/(2*Math.PI) *(max_value - min_value);
-  this.valueContent_1 = document.createTextNode(this.value1 + " of smth");
-  this.value_1.appendChild(this.valueContent_1);  
-  this.container.appendChild(this.value_1);
+ 
+  this.value = document.createElement("div");
+  this.valueTextNode = document.createTextNode("$0");
+  valueContainer.appendChild(this.valueTextNode);  
   
-  self.update = function(fi){
-    self.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi + fi0) - dh/2 +"px";  //x = r*cos(fi); x-coordinate of the #handle
-    self.div_handle.style.top= r + (r+(R-r)/2)*Math.sin(fi +fi0) - dh/2 +"px";   //y - coordinate of the #handle
+  var x1 = self.div_oCircle.getBoundingClientRect().left;
+  var y1 = self.div_oCircle.getBoundingClientRect().top;
+
+  //style - draw lines
+  //used https://stackoverflow.com/a/5912283/8325614
+  function createLineElement(x, y, length, angle) {
+    self.line = document.createElement("div");
+    var styles = 'border: 1px solid white; '
+               + 'width: ' + length + 'px; '
+               + 'height: 0px; '
+               + '-moz-transform: rotate(' + angle + 'rad); '
+               + '-webkit-transform: rotate(' + angle + 'rad); '
+               + '-o-transform: rotate(' + angle + 'rad); '  
+               + '-ms-transform: rotate(' + angle + 'rad); '  
+               + 'position: absolute; '
+               + 'top: ' + y + 'px; '
+               + 'left: ' + x + 'px; '
+               + 'zIndex: 1';
+    self.line.setAttribute('style', styles); 
+    self.div_oCircle.appendChild(self.line); 
+    return self.line;
+  } 
+  function drawLines(){
+    for (var i = 0; i<40; i++ ){
+      var angle = i* 2* Math.PI/40;
+      createLineElement(x1, y1+R, 2*R, angle);
+    }
   }
-  self.update(5*Math.PI/4);
+  drawLines();
+
+
+  self.update = function(fi){
+    self.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi) - dh/2 +"px";  //x = r*cos(fi); x-coordinate of the #handle
+    self.div_handle.style.top= r - (r+(R-r)/2)*Math.sin(fi) - dh/2 +"px";   //y - coordinate of the #handle
+  }
+  self.update(Math.PI/2);
+
+  function fiToPsi(fi){   
+  /**
+   * linear transform from fi [-pi, pi] to psi[0, 2pi] - set origin and direction (anti)clockwise
+   */ 
+    var psi = 0;
+    if (dir > 0){
+      if(fi0 < fi && fi <= Math.PI){
+        psi = -dir*fi + dir*fi0 + 2*Math.PI;           
+      } 
+      if(-Math.PI <= fi && fi <= fi0){
+        psi = -dir*fi + dir*fi0;
+      }     
+    }
+    if (dir < 0){
+      if(-Math.PI<= fi && fi<=fi0){
+        psi = -dir*fi + dir*fi0+2*Math.PI;
+      }   
+      if(fi0<fi && fi<=Math.PI){
+        psi = -dir*fi + dir*fi0;
+      }     
+    }
+    return psi; 
+  }
+
+  var a = (max_value - min_value)/(2*Math.PI);
+  var b = min_value;
+  function fromPsiToValue(psi){
+    return a*psi +b;   
+  }
+  function fromValueToPsi(value){
+    return (value - b)/a;   
+  }
 
   function moveHandle(x, y){
     //move handle to the coordinates
-    fi = Math.atan2(x - x0 - self.r , (y - y0 - self.r));
-    fi = - Math.round(-(fi + Math.PI) / fi_step) * fi_step -Math.PI; 
-    self.value1 = -(fi-Math.PI)/(2*Math.PI) *(max_value - min_value);
-    console.log(self.value1, "value1");
-   
-    self.update(-(fi + Math.PI));
+    fi = Math.atan2(-(y - y0 - self.r), x - x0 - self.r );
+//    fi = - Math.round(-(fi + Math.PI) / fi_step) * fi_step -Math.PI;
+ //    fi = Math.round(fi/fi.step)*fi.step;
+    
+    var psi = fiToPsi(fi);
+  
+    self.value = fromPsiToValue(fiToPsi(fi));
+    self.valueTextNode.nodeValue = "$"+ self.value ;
+    self.update(fi);
 
     if((fi + Math.PI) < Math.PI){
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
+      self.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
       self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
     }
     if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
       self.div_oCircleHover.style.background = "";
-      self.div_oCircleHoverLeft.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0) "+ y  +"px)";
+      self.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.4) "+ y  +"px, transparent " + y0 +R-r+"px)";
     }
   }
 
@@ -126,7 +198,7 @@ function Slider(container, R, max_value, min_value, step, color){
   function click(e){
     if (!e){e = window.event;} 
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
-    if (( e.target !== self.div_oCircle) && (e.target !== self.div_oCircleHover) && (e.target !== self.div_oCircleHoverLeft)) {return;}
+    if (( e.target !== self.div_oCircle) && (e.target !== self.div_oCircleHover) && (e.target !== self.div_oCircleHoverRight)) {return;}
     // find mouse coordinates
     var x = e.pageX;
     var y = e.pageY;
@@ -160,7 +232,7 @@ function Slider(container, R, max_value, min_value, step, color){
     e.preventDefault();
     if (!e){e = window.event;} 
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
-    if( e.target !== self.div_oCircle && e.target == self.div_oCircle && e.target !== self.div_oCircleHover && e.target !== self.div_oCircleHoverLeft) return;
+    if( e.target !== self.div_oCircle && e.target == self.div_oCircle && e.target !== self.div_oCircleHover && e.target !== self.div_oCircleHoverRight) return;
     
     var touches = e.changedTouches;      
     // find finger's coordinates
@@ -194,7 +266,7 @@ function Slider(container, R, max_value, min_value, step, color){
   
   this.div_oCircle.onclick = click;
   this.div_oCircleHover.onclick = click;
-  this.div_oCircleHoverLeft.onclick = click;
+  this.div_oCircleHoverRight.onclick = click;
   this.div_handle.onmousedown = enableDrag;
 
   window.onmouseup = disableDrag; 
