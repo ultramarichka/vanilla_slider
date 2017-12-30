@@ -10,27 +10,62 @@ function demo(){
 
   var sliderContainer = document.createElement("div");
   document.body.appendChild(sliderContainer);
-  new Slider(sliderContainer, 100, 1000, 0, 50, '#fbe5f7', valueContainer); 
+
+  var optionsObjForSlider1 = {"container": sliderContainer,
+                    "R": 100,
+                    "max_value": 1000,
+                    "min_value": 0,
+                    "step": 50,
+                    "color": "green",
+                    "valueContainer": valueContainer
+  };
+  new Slider(optionsObjForSlider1); 
 }
 
-function Slider(container, R, max_value, min_value, step, color, valueContainer){
-  
+
+//http://www.codereadability.com/what-are-javascript-options-objects/
+/*var defaults = {
+                   container: sliderContainer,
+                   R: 100,
+                   max_value: 1000,
+                   min_value: 0,
+                   step: 50,
+                   color: "green",
+                   valueContainer: valueContainer
+  };
+function setDefaults(options, defaults){
+    return _.defaults({}, _.clone(options), defaults);
+}
+*/
+
+function Slider(options){
+
+  //-if vallueContainer is not set - set it to defaults.valueContainer
+  options = setDefaults(options, defaults);
+
+  var R = options.R;
   var self = this;
   this.r = R*0.8;
   self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ; 
   var dir = 1; //direction of psi: "+1" - clockwise, "-1" - anticlockwise
   this.dh = (R - this.r) + 8; //#handle size
-  this.container = container;
+  this.container = options.container;
   self.beingDragged = false;
  
-  this.fi_step = 2*Math.PI * step /(max_value - min_value) ;
+  var max_value = options.max_value ;
+  var min_value = options.min_value ;
+  var step = options.step;
+  var valueContainer = options.valueContainer;
+  this.psi_step = 2*Math.PI * step /(max_value - min_value) ;
+  var a = (max_value - min_value)/(2*Math.PI);
+  var b = min_value;
 
   var r = this.r;
   var dh = this.dh;
   var fi = self.fi;
   var fi0 = self.fi0; 
-  var fi_step = self.fi_step;
+  var psi_step = self.psi_step;
   
 
   this.div_slider = document.createElement("div");
@@ -99,7 +134,8 @@ function Slider(container, R, max_value, min_value, step, color, valueContainer)
   this.div_iCircle.appendChild(this.div_handle);
  
   this.value = document.createElement("div");
-  this.valueTextNode = document.createTextNode("$0");
+  this.initValue = fromPsiToValue(fiToPsi(fi0));
+  this.valueTextNode = document.createTextNode("$" + this.initValue);
   valueContainer.appendChild(this.valueTextNode);  
   
   var x1 = self.div_oCircle.getBoundingClientRect().left;
@@ -163,8 +199,7 @@ function Slider(container, R, max_value, min_value, step, color, valueContainer)
     return psi; 
   }
 
-  var a = (max_value - min_value)/(2*Math.PI);
-  var b = min_value;
+  
   function fromPsiToValue(psi){
     return a*psi +b;   
   }
@@ -175,20 +210,19 @@ function Slider(container, R, max_value, min_value, step, color, valueContainer)
   function moveHandle(x, y){
     //move handle to the coordinates
     fi = Math.atan2(-(y - y0 - self.r), x - x0 - self.r );
-//    fi = - Math.round(-(fi + Math.PI) / fi_step) * fi_step -Math.PI;
- //    fi = Math.round(fi/fi.step)*fi.step;
     
     var psi = fiToPsi(fi);
-  
-    self.value = fromPsiToValue(fiToPsi(fi));
+    psi = Math.round(psi/psi_step)*psi_step;
+    self.value = fromPsiToValue(psi);
+    
     self.valueTextNode.nodeValue = "$"+ self.value ;
     self.update(fi);
 
-    if((fi + Math.PI) < Math.PI){
+    if( -Math.PI/2 <fi < Math.PI/2){
       self.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ ((y0 + 2*self.r +(R-r)/2) -y) +"px)";
+      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ y -(y0 + 2*self.r +(R-r)/2) +"px)";
     }
-    if (((fi + Math.PI) > Math.PI) && ((fi + Math.PI) < 2*Math.PI)) {
+    if (-Math.PI < fi < -Math.PI/2 ||  Math.PI > fi > Math.PI/2) {
       self.div_oCircleHover.style.background = "";
       self.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.4) "+ y  +"px, transparent " + y0 +R-r+"px)";
     }
