@@ -11,37 +11,20 @@ function demo(){
   var sliderContainer = document.createElement("div");
   document.body.appendChild(sliderContainer);
 
-  var optionsObjForSlider1 = {"container": sliderContainer,
-                    "R": 100,
-                    "max_value": 1000,
-                    "min_value": 0,
-                    "step": 50,
-                    "color": "green",
-                    "valueContainer": valueContainer
-  };
-  new Slider(optionsObjForSlider1); 
-}
-
-
-//http://www.codereadability.com/what-are-javascript-options-objects/
-/*var defaults = {
-                   container: sliderContainer,
+  var options = { container: sliderContainer,
                    R: 100,
-                   max_value: 1000,
+                   max_value: 800,
                    min_value: 0,
                    step: 50,
                    color: "green",
-                   valueContainer: valueContainer
+                   //valueContainer: valueContainer
   };
-function setDefaults(options, defaults){
-    return _.defaults({}, _.clone(options), defaults);
+
+  new Slider(options);
+ 
 }
-*/
 
 function Slider(options){
-
-  //-if vallueContainer is not set - set it to defaults.valueContainer
-  options = setDefaults(options, defaults);
 
   var R = options.R;
   var self = this;
@@ -56,7 +39,6 @@ function Slider(options){
   var max_value = options.max_value ;
   var min_value = options.min_value ;
   var step = options.step;
-  var valueContainer = options.valueContainer;
   this.psi_step = 2*Math.PI * step /(max_value - min_value) ;
   var a = (max_value - min_value)/(2*Math.PI);
   var b = min_value;
@@ -66,6 +48,14 @@ function Slider(options){
   var fi = self.fi;
   var fi0 = self.fi0; 
   var psi_step = self.psi_step;
+
+  //if valueContainer is not set -> create and set it to 'default'
+  if(options.valueContainer){
+    var valueContainer = options.valueContainer;
+  } else {
+    var valueContainer = document.createElement("div");
+    this.container.appendChild(valueContainer);
+  }
   
 
   this.div_slider = document.createElement("div");
@@ -201,7 +191,7 @@ function Slider(options){
 
   
   function fromPsiToValue(psi){
-    return a*psi +b;   
+    return Math.round((a*psi +b)/step)*step;  
   }
   function fromValueToPsi(value){
     return (value - b)/a;   
@@ -212,7 +202,7 @@ function Slider(options){
     fi = Math.atan2(-(y - y0 - self.r), x - x0 - self.r );
     
     var psi = fiToPsi(fi);
-    psi = Math.round(psi/psi_step)*psi_step;
+    psi = (Math.round(psi/psi_step))*psi_step;
     self.value = fromPsiToValue(psi);
     
     self.valueTextNode.nodeValue = "$"+ self.value ;
