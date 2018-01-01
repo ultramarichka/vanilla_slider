@@ -15,7 +15,7 @@ function demo(){
                    R: 100,
                    max_value: 800,
                    min_value: 0,
-                   step: 50,
+                   step: 1,
                    color: "green",
                    //valueContainer: valueContainer
   };
@@ -237,13 +237,13 @@ function Slider(options){
     // find mouse coordinates
     var x = e.pageX;
     var y = e.pageY;
-    moveHandle(x, y) 
+    moveHandle(x, y); 
   } 
 
   function enableDrag(e){
     self.beingDragged = true;
-    window.onmousemove = drag;  
-    drag(e);
+    window.onmousemove = drag; 
+    //drag(e);
   } 
 
   function disableDrag (){
@@ -252,12 +252,12 @@ function Slider(options){
   }
   
   //------TOUCH CALLBACKS-------
-  function touchStart(e){
-    e.preventDefault();
+  function touchClickStart(e){
+    //??
     if (!e){e = window.event;} 
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
-    if( e.target !== self.div_oCircle && e.target == self.div_oCircle && e.target !== self.div_oCircleHover && e.target !== self.div_oCircleHoverRight) return;
-    
+    if( e.target !== self.div_oCircle || e.target !== self.div_oCircleHover || e.target !== self.div_oCircleHoverRight) return;
+    console.log("touchclick");
     var touches = e.changedTouches;      
     // find finger's coordinates
     var x = e.changedTouches[0].pageX;
@@ -265,38 +265,60 @@ function Slider(options){
     moveHandle(x, y);
   }
   
-  function touchDrag(e){
-    if (!e){ e = window.event;} 
-    if(!self.beingDragged){return;}
+  var xstart;
+  var ystart;
+
+  function touchStartDrag(e){
+    //self.div_oCircle.removeEventListener("touchstart", touchClickStart, {passive: true});
+    //if (!e){ e = window.event;} 
+    if( e.target !== self.div_handle) return;
     // find finger coordinates
-    var x = e.changedTouches[0].pageX;
-    var y = e.changedTouches[0].pageY;
-    moveHandle(x, y);
+    xstart = e.changedTouches[0].pageX;
+    ystart = e.changedTouches[0].pageY;
+    console.log("changedTouches[0]", e.changedTouches[0], "xstart", xstart, "ystart", ystart);
+    
+    self.div_handle.addEventListener("touchmove", touchMoveDrag, {passive: true});
+    self.div_handle.addEventListener("touchend", touchEnd, {passive: true});
+    self.div_handle.addEventListener("touchcancel", touchCancel, {passive: true});
   } 
  
-  function enableTouchDrag(e){
-    e.preventDefault();
-    self.beingDragged = true;
-    touchDrag(e);
+  function touchMoveDrag(e){
+    var x = e.changedTouches[0].pageX;
+    var y = e.changedTouches[0].pageY;
+    console.log("MOVE", "x", x, "y", y);
+    moveHandle(x, y);
+   
   }
-  function disableTouchDrag(e){
-    e.preventDefault();
-    self.beingDragged = false;
-    self.div_handle.removeEventListener("touchmove", enableTouchDrag, false);
+
+  function touchEnd(e){
+    self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: true});
+    self.div_handle.removeEventListener("touchend", touchEnd, {passive: true});
+    //self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   }
- 
+
+  function touchCancel(e){
+    moveHandle(xstart, ystart);
+    console.log("touchcancel");
+    self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: true});
+    self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: true});
+    //self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+  }
 
   // -----------ATTACH CALLBACKS------------
-  
+ /* 
   this.div_oCircle.onclick = click;
   this.div_oCircleHover.onclick = click;
   this.div_oCircleHoverRight.onclick = click;
   this.div_handle.onmousedown = enableDrag;
 
   window.onmouseup = disableDrag; 
+  */
+  // -----------ATTACH TOUCH CALLBACKS------------
 
-  this.div_oCircle.addEventListener("touchstart", touchStart, false);
-  this.div_handle.addEventListener("touchstart", touchStart, false);
+  //this.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+  
+  
+  this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: true});
 
   /*touch events always target the element where that touch STARTED, while mouse events target 
    the element currently under the mouse cursor.
