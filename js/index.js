@@ -114,13 +114,14 @@ function Slider(options){
 
   this.div_handle = document.createElement("div");
   this.div_handle.id = "handle";
-  this.div_handle.style.width= dh+"px";
-  this.div_handle.style.height= dh +"px";
-  this.div_handle.style.borderRadius = dh/2+"px";
-  this.div_handle.style.background = "red";
-  this.div_handle.style.border = "1px solid #a8a8a8";
-  this.div_handle.style.position = "relative";
-  this.div_handle.style.zIndex = "5"; 
+  self.handleStyles  = "width:" + dh+"px; "
+                      + "height:" + dh +"px; "
+                      + "border-radius:" + dh/2+"px; "
+                      + "background: red; "
+                      + "border: 1px solid #a8a8a8; "
+                      + "position: relative; "
+                      + "z-index: 5; ";
+  self.div_handle.setAttribute('style', self.handleStyles); 
   this.div_iCircle.appendChild(this.div_handle);
  
   this.value = document.createElement("div");
@@ -160,8 +161,11 @@ function Slider(options){
 
 
   self.update = function(fi){
-    self.div_handle.style.left= r + (r+(R-r)/2)*Math.cos(fi) - dh/2 +"px";  //x = r*cos(fi); x-coordinate of the #handle
-    self.div_handle.style.top= r - (r+(R-r)/2)*Math.sin(fi) - dh/2 +"px";   //y - coordinate of the #handle
+    var styles = self.handleStyles 
+                + 'left: ' + (r + (r+(R-r)/2)*Math.cos(fi) - dh/2) +"px; "   
+                + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi) - dh/2) +"px; "; 
+       
+    self.div_handle.setAttribute('style', styles);
   }
   self.update(Math.PI/2);
 
