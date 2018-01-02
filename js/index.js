@@ -1,7 +1,5 @@
 document.body.onload = demo();
 
-
-  
 //??how to make opacity in linear-gradient if I set color here
 //not-rgb notation is not supported in safari https://css-tricks.com/thing-know-gradients-transparent-black/
 function demo(){
@@ -17,11 +15,10 @@ function demo(){
                    min_value: 0,
                    step: 1,
                    color: "green",
-                   //valueContainer: valueContainer
+                   valueContainer: valueContainer
   };
 
   new Slider(options);
- 
 }
 
 function Slider(options){
@@ -63,48 +60,55 @@ function Slider(options){
   this.container.appendChild(this.div_slider);
 
   this.div_oCircle = document.createElement("div");
-  this.div_oCircle.id = "outer_circle";
-  this.div_oCircle.style.width=2*R+"px";
-  this.div_oCircle.style.height=2*R+"px";
-  this.div_oCircle.style.borderRadius = R+"px";
-  this.div_oCircle.style.background = "#d3d3d3";
-  this.div_oCircle.style.opacity = "0.6";
+  self.oCircleStyles  = "width: " + (2*R) +"px; "
+                      + "height: " + (2*R) +"px; "
+                      + "border-radius:" + R +"px; "
+                      + "background: #d3d3d3; "
+                      + "z-index: 1; ";
+  self.div_oCircle.setAttribute('style', self.oCircleStyles); 
   this.div_slider.appendChild(this.div_oCircle);
 
   //used cheating variant of "conic-gradient" via linear-gradient https://stackoverflow.com/a/22859559/8325614
   //right half-circle hover
   this.div_oCircleHover = document.createElement("div");
-  this.div_oCircleHover.style.width=R+"px";
-  this.div_oCircleHover.style.height=2*R+"px";
-  this.div_oCircleHover.style.borderRadius = R+"px 0 0 "+R+"px";
-  this.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px)";
-  this.div_oCircleHover.style.zIndex = "2";
+  self.oCircleHoverStyles  = "width: " + R +"px; "
+                      + "height: " + (2*R) +"px; "
+                      + "border-radius: " + R+"px 0 0 "+R+"px; "
+                      + "-moz-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
+                      + "-webkit-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
+                      + "-o-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
+                      + "-ms-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
+                      + "z-index: 2; ";
+  self.div_oCircleHover.setAttribute('style', self.oCircleHoverStyles); 
   this.div_oCircle.appendChild(this.div_oCircleHover);
   
   //right half-circle hover
   this.div_oCircleHoverRight = document.createElement("div");
-  this.div_oCircleHoverRight.style.width=R+"px";
-  this.div_oCircleHoverRight.style.height=2*R+"px";
-  this.div_oCircleHoverRight.style.right=-R+"px";
-  this.div_oCircleHoverRight.style.top=-2*R+"px";
-  this.div_oCircleHoverRight.style.borderRadius = "0 "+R+"px "+R+"px 0";
-  this.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-  this.div_oCircleHoverRight.style.position = "relative";
-  this.div_oCircleHoverRight.style.zIndex = "3";
+  self.oCircleHoverRightStyles  = "width: " + R +"px; "
+                      + "height: " + (2*R) +"px; "
+                      + "right: " +(-R)+"px; "
+                      + "top: " +(-2*R)+"px; "
+                      + "border-radius: 0 "+R+"px "+R+"px 0; "
+                      + "-moz-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
+                      + "-webkit-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
+                      + "-o-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
+                      + "-ms-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
+                      + "position: relative; "
+                      + "z-index: 3; ";
+  self.div_oCircleHoverRight.setAttribute('style', self.oCircleHoverRightStyles); 
   this.div_oCircle.appendChild(this.div_oCircleHoverRight);
 
   //mask
-  this.div_iCircle = document.createElement("div");
-  this.div_iCircle.id = "inner_circle";
-  this.div_iCircle.style.width= 2*r+"px";
-  this.div_iCircle.style.height= 2*r+"px";
-  this.div_iCircle.style.borderRadius = r+"px";
-  this.div_iCircle.style.background = "white";
-  //this.div_iCircle.style.opacity = "0.6";
-  this.div_iCircle.style.position = "relative";
-  this.div_iCircle.style.left = (R-r)+"px";
-  this.div_iCircle.style.top= (R-r)+"px";
-  this.div_iCircle.style.zIndex = "4"; 
+  self.div_iCircle = document.createElement("div");
+  self.iCircleStyles  = "width: " + (2*r) +"px; "
+                      + "height: " + (2*r) +"px; "
+                      + "border-radius:" + r +"px; "
+                      + "background: white; "
+                      + "left: " +(R-r)+"px; "
+                      + "top: " +(R-r)+"px; "
+                      + "position: relative; "
+                      + "z-index: 4; ";
+  self.div_iCircle.setAttribute('style', self.iCircleStyles); 
   this.div_oCircleHover.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
   // nice approach from here https://stackoverflow.com/a/33347664/8325614
@@ -113,7 +117,6 @@ function Slider(options){
  
 
   this.div_handle = document.createElement("div");
-  this.div_handle.id = "handle";
   self.handleStyles  = "width:" + dh+"px; "
                       + "height:" + dh +"px; "
                       + "border-radius:" + dh/2+"px; "
@@ -212,14 +215,15 @@ function Slider(options){
     self.valueTextNode.nodeValue = "$"+ self.value ;
     self.update(fi);
 
+    /*
     if( -Math.PI/2 <fi < Math.PI/2){
-      self.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
-      self.div_oCircleHover.style.background = "linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ y -(y0 + 2*self.r +(R-r)/2) +"px)";
+      self.div_oCircleHoverRight.style.background = "-moz-linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5) )";
+      self.div_oCircleHover.style.background = "-moz-linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) "+ y -(y0 + 2*self.r +(R-r)/2) +"px)";
     }
     if (-Math.PI < fi < -Math.PI/2 ||  Math.PI > fi > Math.PI/2) {
       self.div_oCircleHover.style.background = "";
-      self.div_oCircleHoverRight.style.background = "linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.4) "+ y  +"px, transparent " + y0 +R-r+"px)";
-    }
+      self.div_oCircleHoverRight.style.background = "-moz-linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.4) "+ y  +"px, transparent " + y0 +R-r+"px)";
+    }*/
   }
 
   // -----------CALLBACKS--------------------
@@ -273,13 +277,12 @@ function Slider(options){
   var ystart;
 
   function touchStartDrag(e){
-    //self.div_oCircle.removeEventListener("touchstart", touchClickStart, {passive: true});
+    self.div_oCircle.removeEventListener("touchstart", touchClickStart, {passive: true});
     //if (!e){ e = window.event;} 
     if( e.target !== self.div_handle) return;
     // find finger coordinates
     xstart = e.changedTouches[0].pageX;
     ystart = e.changedTouches[0].pageY;
-    console.log("changedTouches[0]", e.changedTouches[0], "xstart", xstart, "ystart", ystart);
     
     self.div_handle.addEventListener("touchmove", touchMoveDrag, {passive: true});
     self.div_handle.addEventListener("touchend", touchEnd, {passive: true});
@@ -289,7 +292,6 @@ function Slider(options){
   function touchMoveDrag(e){
     var x = e.changedTouches[0].pageX;
     var y = e.changedTouches[0].pageY;
-    console.log("MOVE", "x", x, "y", y);
     moveHandle(x, y);
    
   }
@@ -297,29 +299,26 @@ function Slider(options){
   function touchEnd(e){
     self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: true});
     self.div_handle.removeEventListener("touchend", touchEnd, {passive: true});
-    //self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+    self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   }
 
   function touchCancel(e){
     moveHandle(xstart, ystart);
-    console.log("touchcancel");
     self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: true});
     self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: true});
-    //self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+    self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   }
 
   // -----------ATTACH CALLBACKS------------
- /* 
+  
   this.div_oCircle.onclick = click;
-  this.div_oCircleHover.onclick = click;
-  this.div_oCircleHoverRight.onclick = click;
   this.div_handle.onmousedown = enableDrag;
 
   window.onmouseup = disableDrag; 
-  */
+  
   // -----------ATTACH TOUCH CALLBACKS------------
 
-  //this.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+  this.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   
   
   this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: true});
