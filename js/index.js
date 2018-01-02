@@ -15,11 +15,18 @@ function demo(){
                    min_value: 0,
                    step: 1,
                    color: "green",
-                   valueContainer: valueContainer
+                   valueContainer: valueContainer,
+                   zIndex: 1
   };
 
   new Slider(options);
+ 
+  options.R = 70;
+  options.zIndex = 2;
+  
+  new Slider(options);
 }
+
 
 function Slider(options){
 
@@ -56,7 +63,11 @@ function Slider(options){
   
 
   this.div_slider = document.createElement("div");
-  this.div_slider.id = "slider";
+  this.sliderStyles = "position: absolute; "
+                    + "z-index: " + options.zIndex +"; "
+                    + "text-align: center; ";
+                   // + "margin: 0 auto; ";
+  self.div_slider.setAttribute('style', self.sliderStyles); 
   this.container.appendChild(this.div_slider);
 
   this.div_oCircle = document.createElement("div");
@@ -64,6 +75,7 @@ function Slider(options){
                       + "height: " + (2*R) +"px; "
                       + "border-radius:" + R +"px; "
                       + "background: #d3d3d3; "
+                      + "position: relative; "
                       + "z-index: 1; ";
   self.div_oCircle.setAttribute('style', self.oCircleStyles); 
   this.div_slider.appendChild(this.div_oCircle);
@@ -131,15 +143,12 @@ function Slider(options){
   this.initValue = fromPsiToValue(fiToPsi(fi0));
   this.valueTextNode = document.createTextNode("$" + this.initValue);
   valueContainer.appendChild(this.valueTextNode);  
-  
-  var x1 = self.div_oCircle.getBoundingClientRect().left;
-  var y1 = self.div_oCircle.getBoundingClientRect().top;
 
   //style - draw lines
   //used https://stackoverflow.com/a/5912283/8325614
   function createLineElement(x, y, length, angle) {
     self.line = document.createElement("div");
-    var styles = 'border: 1px solid white; '
+    var styles = 'border: 1px solid black; '
                + 'width: ' + length + 'px; '
                + 'height: 0px; '
                + '-moz-transform: rotate(' + angle + 'rad); '
@@ -157,7 +166,7 @@ function Slider(options){
   function drawLines(){
     for (var i = 0; i<40; i++ ){
       var angle = i* 2* Math.PI/40;
-      createLineElement(x1, y1+R, 2*R, angle);
+      createLineElement(0, R, 2*R, angle);
     }
   }
   drawLines();
