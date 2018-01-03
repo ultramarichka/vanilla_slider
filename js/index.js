@@ -7,6 +7,8 @@ function demo(){
   document.body.appendChild(valueContainer);
 
   var sliderContainer = document.createElement("div");
+  var styles = "width: 400px; height: 400px; background: yellow";
+  sliderContainer.setAttribute("style",styles);
   document.body.appendChild(sliderContainer);
 
   var options = { container: sliderContainer,
@@ -65,7 +67,11 @@ function Slider(options){
   this.div_slider = document.createElement("div");
   this.sliderStyles = "position: absolute; "
                     + "z-index: " + options.zIndex +"; "
-                    + "text-align: center; ";
+                    + "top: 50%; "
+                    + "left: 50%; "
+                    +  "margin-right: -50%; "
+                    + "transform: translate(-50%, -50%); "
+                    + "-moz-transform: translate(-50%, -50%); ";
                    // + "margin: 0 auto; ";
   self.div_slider.setAttribute('style', self.sliderStyles); 
   this.container.appendChild(this.div_slider);
@@ -124,8 +130,6 @@ function Slider(options){
   this.div_oCircleHover.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
   // nice approach from here https://stackoverflow.com/a/33347664/8325614
-  var x0 = self.div_iCircle.getBoundingClientRect().left;
-  var y0 = self.div_iCircle.getBoundingClientRect().top;
  
 
   this.div_handle = document.createElement("div");
@@ -214,6 +218,8 @@ function Slider(options){
   }
 
   function moveHandle(x, y){
+    var x0 = self.div_iCircle.getBoundingClientRect().left;
+    var y0 = self.div_iCircle.getBoundingClientRect().top;
     //move handle to the coordinates
     fi = Math.atan2(-(y - y0 - self.r), x - x0 - self.r );
     
@@ -258,6 +264,9 @@ function Slider(options){
   } 
 
   function enableDrag(e){
+    //http://www.javascripter.net/faq/canceleventbubbling.htm
+    if (e.stopPropagation)    e.stopPropagation();
+    if (!e.cancelBubble) e.cancelBubble = true;
     self.beingDragged = true;
     window.onmousemove = drag; 
     //drag(e);
