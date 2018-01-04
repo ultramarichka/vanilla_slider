@@ -49,7 +49,10 @@ function setContainerAtTheCenterOfThePage(div2){
   var div2HalfWidth = Number(div2.style.width.slice(0, div2.style.width.length -2))/2;
   var div2HalfHeight = Number(div2.style.height.slice(0, div2.style.height.length -2))/2;
 
-  return style = "-moz-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "  ;  
+  return style = "-moz-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "
+               + "-webkit-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); " 
+               + "-o-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); " 
+               + "-ms-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); " ;  
 }
 
 function setDivInTheCenterOfAnotherDiv(div1, div2){
@@ -59,7 +62,11 @@ function setDivInTheCenterOfAnotherDiv(div1, div2){
   var div2HalfWidth = Number(div2.style.width.slice(0, div2.style.width.length -2))/2;
   var div2HalfHeight = Number(div2.style.height.slice(0, div2.style.height.length -2))/2; 
 
-  return style = "-moz-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "  ;
+  return style = "-moz-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); " 
+               + "-webkit-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "
+               + "-o-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "
+               + "-ms-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "
+               + "transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); ";
 }
 
 function Slider(options){
@@ -156,6 +163,10 @@ function Slider(options){
                       + "left: " +(R-r)+"px; "
                       + "top: " +(R-r)+"px; "
                       + "position: relative; "
+                      + '-moz-user-select: none; '
+                      + '-khtml-user-select: none; '
+                      + '-webkit-user-select: none; '
+                      + 'user-select: none; '
                       + "z-index: 4; ";
   self.div_iCircle.setAttribute('style', self.iCircleStyles); 
   this.div_oCircleHover.appendChild(this.div_iCircle);
@@ -193,7 +204,12 @@ function Slider(options){
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '
-               + 'zIndex: 1';
+               + 'zIndex: 1; '
+               /*to avoid dragability https://www.html5rocks.com/en/tutorials/dnd/basics/*/
+               + '-moz-user-select: none; '     
+               + '-khtml-user-select: none; '
+               + '-webkit-user-select: none; '
+               + 'user-select: none; ';
     self.line.setAttribute('style', styles); 
     self.div_oCircle.appendChild(self.line); 
     return self.line;
@@ -295,11 +311,13 @@ function Slider(options){
   } 
 
   function enableDrag(e){
-    //http://www.javascripter.net/faq/canceleventbubbling.htm
-    //if (e.preventDefault)  e.preventDefault(); // : e.returnValue = false;
-    if (e.stopPropagation)    e.stopPropagation();
-    //if (!e.cancelBubble) e.cancelBubble = true;
-
+    /**
+     * to avoid 'dragability'(works even without it), what else?
+     * http://www.javascripter.net/faq/canceleventbubbling.htm
+     * e.preventDefault ?  e.preventDefault() : e.returnValue = false;
+     * if (e.stopPropagation)    e.stopPropagation();
+     * if (!e.cancelBubble) e.cancelBubble = true;
+     */ 
     self.beingDragged = true;
     window.onmousemove = drag; 
     //drag(e);
