@@ -9,10 +9,12 @@ function demo(){
   var zIndexContainer = -1;
 
   var sliderContainer = document.createElement("div");
-  var styles = "width: 400px; height: 800px; background: #ededed; "
+  var styles = "width: 600px; height: 400px; background: #ededed; "
               + "position: absolute; "
               + "z-index: " + zIndexContainer +"; ";
-  sliderContainer.setAttribute("style",styles);
+  sliderContainer.setAttribute("style",styles);  //this line is needed -> to set width/height to the div 
+  styles = styles + setContainerAtTheCenterOfThePage(sliderContainer);
+  sliderContainer.setAttribute("style",styles); 
   document.body.appendChild(sliderContainer);
 
   var options = { container: sliderContainer,
@@ -40,14 +42,22 @@ function demo(){
   new Slider(options);
 }
 
+function setContainerAtTheCenterOfThePage(div2){
+  var w = window.innerWidth/2;
+  var h = window.innerHeight/2;
+
+  var div2HalfWidth = Number(div2.style.width.slice(0, div2.style.width.length -2))/2;
+  var div2HalfHeight = Number(div2.style.height.slice(0, div2.style.height.length -2))/2;
+
+  return style = "-moz-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "  ;  
+}
+
 function setDivInTheCenterOfAnotherDiv(div1, div2){
   var div1HalfWidth = Number(div1.style.width.slice(0, div1.style.width.length -2))/2;
   var div1HalfHeight = Number(div1.style.height.slice(0, div1.style.height.length -2))/2; 
-  console.log(div1HalfWidth, div1HalfHeight);
+
   var div2HalfWidth = Number(div2.style.width.slice(0, div2.style.width.length -2))/2;
   var div2HalfHeight = Number(div2.style.height.slice(0, div2.style.height.length -2))/2; 
-  console.log(div2HalfWidth, div2HalfHeight);
-  div2.style.transform = "translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "  
 
   return style = "-moz-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "  ;
 }
@@ -60,7 +70,7 @@ function Slider(options){
   self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ; 
   var dir = 1; //direction of psi: "+1" - clockwise, "-1" - anticlockwise
-  this.dh = 28; //#handle size
+  this.dh = 24; //#handle size
   this.container = options.container;
   self.beingDragged = false;
  
@@ -286,8 +296,10 @@ function Slider(options){
 
   function enableDrag(e){
     //http://www.javascripter.net/faq/canceleventbubbling.htm
+    //if (e.preventDefault)  e.preventDefault(); // : e.returnValue = false;
     if (e.stopPropagation)    e.stopPropagation();
-    if (!e.cancelBubble) e.cancelBubble = true;
+    //if (!e.cancelBubble) e.cancelBubble = true;
+
     self.beingDragged = true;
     window.onmousemove = drag; 
     //drag(e);
