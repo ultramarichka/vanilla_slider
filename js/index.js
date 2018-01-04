@@ -9,7 +9,7 @@ function demo(){
   var zIndexContainer = -1;
 
   var sliderContainer = document.createElement("div");
-  var styles = "width: 400px; height: 800px; background: orange; "
+  var styles = "width: 400px; height: 800px; background: #ededed; "
               + "position: absolute; "
               + "z-index: " + zIndexContainer +"; ";
   sliderContainer.setAttribute("style",styles);
@@ -56,11 +56,11 @@ function Slider(options){
 
   var R = options.R;
   var self = this;
-  this.r = R*0.8;
+  this.r = R - 20;
   self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ; 
   var dir = 1; //direction of psi: "+1" - clockwise, "-1" - anticlockwise
-  this.dh = (R - this.r) + 8; //#handle size
+  this.dh = 28; //#handle size
   this.container = options.container;
   self.beingDragged = false;
  
@@ -142,7 +142,7 @@ function Slider(options){
   self.iCircleStyles  = "width: " + (2*r) +"px; "
                       + "height: " + (2*r) +"px; "
                       + "border-radius:" + r +"px; "
-                      + "background: white; "
+                      + "background: #ededed; "
                       + "left: " +(R-r)+"px; "
                       + "top: " +(R-r)+"px; "
                       + "position: relative; "
@@ -157,7 +157,7 @@ function Slider(options){
   self.handleStyles  = "width:" + dh+"px; "
                       + "height:" + dh +"px; "
                       + "border-radius:" + dh/2+"px; "
-                      + "background: red; "
+                      + "background: white; "
                       + "border: 1px solid #a8a8a8; "
                       + "position: relative; "
                       + "z-index: 5; ";
@@ -173,7 +173,7 @@ function Slider(options){
   //used https://stackoverflow.com/a/5912283/8325614
   function createLineElement(x, y, length, angle) {
     self.line = document.createElement("div");
-    var styles = 'border: 1px solid black; '
+    var styles = 'border: 1px solid #ededed; '
                + 'width: ' + length + 'px; '
                + 'height: 0px; '
                + '-moz-transform: rotate(' + angle + 'rad); '
