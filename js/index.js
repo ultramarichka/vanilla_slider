@@ -28,9 +28,16 @@ function demo(){
   new Slider(options);
   
   options.R = 70;
-  options.zIndex = zIndexContainer + 6;
-  
-  //new Slider(options);
+  zIndexContainer = zIndexContainer + 2;
+  options.zIndex = zIndexContainer;
+ 
+  new Slider(options);
+
+  options.R = 40;
+  zIndexContainer = zIndexContainer + 3;
+  options.zIndex = zIndexContainer;
+ 
+  new Slider(options);
 }
 
 function setDivInTheCenterOfAnotherDiv(div1, div2){
@@ -79,8 +86,7 @@ function Slider(options){
   }
   
   this.div_slider = document.createElement("div");
-  this.sliderStyles =  "width: 300px; height: 300px; background: yellow;  "
-                    + "position: relative; "
+  this.sliderStyles = "position: absolute; "
                     + "z-index: 0; ";
                     
   self.div_slider.setAttribute('style', self.sliderStyles); 
