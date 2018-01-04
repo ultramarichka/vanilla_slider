@@ -1,6 +1,16 @@
-1. 'dragability' problems - again ;(
-2. Compatibilities w/other browsers (ex., -webkit-border-radius: 80px; ...) 
+   crossbrowsers' testing
+   profiler test
+
+1. - place values
+2.  lines: AmountOflines = (max - min)/step;
+    !!stop after max
 
 3. Add - destructor function
-4. Add colors (draw piece of step size and add for drag/click ?) 
-5. Centralize #slider
+ 
+   - clean code from the rest linear-gradient cheats - or make it nice
+4. Add colors (draw piece of step size and add for drag/click ?)
+   - make mask transparent 
+   - gradient background
+   - check: compatibilities w/other browsers 
+
+  
