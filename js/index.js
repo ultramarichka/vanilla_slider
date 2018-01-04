@@ -18,7 +18,7 @@ function demo(){
   document.body.appendChild(sliderContainer);
 
   var options = { container: sliderContainer,
-                   R: 100,
+                   R: 170,
                    max_value: 800,
                    min_value: 0,
                    step: 1,
@@ -29,14 +29,26 @@ function demo(){
 
   new Slider(options);
   
-  options.R = 70;
-  zIndexContainer = zIndexContainer + 2;
+  options.R = 140;
+  zIndexContainer = zIndexContainer + 1;
   options.zIndex = zIndexContainer;
  
   new Slider(options);
 
-  options.R = 40;
+  options.R = 110;
+  zIndexContainer = zIndexContainer + 2;
+  options.zIndex = zIndexContainer;
+ 
+  new Slider(options);
+  
+  options.R = 80;
   zIndexContainer = zIndexContainer + 3;
+  options.zIndex = zIndexContainer;
+ 
+  new Slider(options);
+
+  options.R = 50;
+  zIndexContainer = zIndexContainer + 4;
   options.zIndex = zIndexContainer;
  
   new Slider(options);
@@ -215,8 +227,8 @@ function Slider(options){
     return self.line;
   } 
   function drawLines(){
-    for (var i = 0; i<40; i++ ){
-      var angle = i* 2* Math.PI/40;
+    for (var i = 0; i < 60; i++ ){
+      var angle = i* 2* Math.PI/60;
       createLineElement(0, R, 2*R, angle);
     }
   }
