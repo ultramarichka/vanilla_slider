@@ -1,8 +1,6 @@
+1. 'dragability' problems - again ;(
+2. Compatibilities w/other browsers (ex., -webkit-border-radius: 80px; ...) 
 
-   add more sliders
-3. Compatibilities w/other browsers (ex., -webkit-border-radius: 80px; ...)
-   - the app has no need to be scalable for mobiles, right? 
-
-4. Add - destructor function
- . Add colors (draw piece of step size and add for drag/click ?) 
+3. Add - destructor function
+4. Add colors (draw piece of step size and add for drag/click ?) 
 5. Centralize #slider
