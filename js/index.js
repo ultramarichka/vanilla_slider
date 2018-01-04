@@ -6,8 +6,12 @@ function demo(){
   var valueContainer = document.createElement("div");
   document.body.appendChild(valueContainer);
 
+  var zIndexContainer = -1;
+
   var sliderContainer = document.createElement("div");
-  var styles = "width: 400px; height: 400px; background: yellow";
+  var styles = "width: 400px; height: 800px; background: orange; "
+              + "position: absolute; "
+              + "z-index: " + zIndexContainer +"; ";
   sliderContainer.setAttribute("style",styles);
   document.body.appendChild(sliderContainer);
 
@@ -18,17 +22,28 @@ function demo(){
                    step: 1,
                    color: "green",
                    valueContainer: valueContainer,
-                   zIndex: 1
+                   zIndex: zIndexContainer
   };
 
   new Slider(options);
- 
-  options.R = 70;
-  options.zIndex = 2;
   
-  new Slider(options);
+  options.R = 70;
+  options.zIndex = zIndexContainer + 6;
+  
+  //new Slider(options);
 }
 
+function setDivInTheCenterOfAnotherDiv(div1, div2){
+  var div1HalfWidth = Number(div1.style.width.slice(0, div1.style.width.length -2))/2;
+  var div1HalfHeight = Number(div1.style.height.slice(0, div1.style.height.length -2))/2; 
+  console.log(div1HalfWidth, div1HalfHeight);
+  var div2HalfWidth = Number(div2.style.width.slice(0, div2.style.width.length -2))/2;
+  var div2HalfHeight = Number(div2.style.height.slice(0, div2.style.height.length -2))/2; 
+  console.log(div2HalfWidth, div2HalfHeight);
+  div2.style.transform = "translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "  
+
+  return style = "-moz-transform: translate(" + (div1HalfWidth - div2HalfWidth) +"px, " + (div1HalfHeight - div2HalfHeight)+"px); "  ;
+}
 
 function Slider(options){
 
@@ -63,27 +78,27 @@ function Slider(options){
     this.container.appendChild(valueContainer);
   }
   
-
   this.div_slider = document.createElement("div");
-  this.sliderStyles = "position: absolute; "
-                    + "z-index: " + options.zIndex +"; "
-                    + "top: 50%; "
-                    + "left: 50%; "
-                    +  "margin-right: -50%; "
-                    + "transform: translate(-50%, -50%); "
-                    + "-moz-transform: translate(-50%, -50%); ";
-                   // + "margin: 0 auto; ";
+  this.sliderStyles =  "width: 300px; height: 300px; background: yellow;  "
+                    + "position: relative; "
+                    + "z-index: 0; ";
+                    
   self.div_slider.setAttribute('style', self.sliderStyles); 
+  self.sliderStyles = self.sliderStyles + setDivInTheCenterOfAnotherDiv(this.container, this.div_slider);
+   self.div_slider.setAttribute('style', self.sliderStyles); 
   this.container.appendChild(this.div_slider);
 
   this.div_oCircle = document.createElement("div");
-  self.oCircleStyles  = "width: " + (2*R) +"px; "
+  self.oCircleStyles  = "position: relative; "
+                      + "z-index: 1; "
+                      + "width: " + (2*R) +"px; "
                       + "height: " + (2*R) +"px; "
                       + "border-radius:" + R +"px; "
-                      + "background: #d3d3d3; "
-                      + "position: relative; "
-                      + "z-index: 1; ";
-  self.div_oCircle.setAttribute('style', self.oCircleStyles); 
+                      + "background: #d3d3d3; ";
+                                       
+  self.div_oCircle.setAttribute('style', self.oCircleStyles);
+  self.oCircleStyles = self.oCircleStyles + setDivInTheCenterOfAnotherDiv(this.div_slider, this.div_oCircle);
+   self.div_oCircle.setAttribute('style', self.oCircleStyles); 
   this.div_slider.appendChild(this.div_oCircle);
 
   //used cheating variant of "conic-gradient" via linear-gradient https://stackoverflow.com/a/22859559/8325614
