@@ -62,7 +62,7 @@ function demo(){
                      R: RArr[i],
                      max_value: maxArr[i],
                      min_value: 0,
-                     step: 100,
+                     step: 10,
                      color: "green",
                      valueContainer: valContArr[i]
     };
@@ -196,14 +196,14 @@ function Slider(options){
                       + "background: #ededed; "
                       + "left: " +(R-r)+"px; "
                       + "top: " +(R-r)+"px; "
-                      + "position: relative; "
+                      + "position: absolute; "
                       + '-moz-user-select: none; '
                       + '-khtml-user-select: none; '
                       + '-webkit-user-select: none; '
                       + 'user-select: none; '
                       + "z-index: 4; ";
   self.div_iCircle.setAttribute('style', self.iCircleStyles); 
-  this.div_oCircleHover.appendChild(this.div_iCircle);
+  this.div_oCircle.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
   // nice approach from here https://stackoverflow.com/a/33347664/8325614
  
@@ -231,7 +231,6 @@ function Slider(options){
     var styles = 'border: 1px solid #ededed; '
                + 'width: ' + length + 'px; '
                + 'height: 0px; '
-
                + '-moz-transform: rotate(' + angle + 'rad); '
                + '-webkit-transform: rotate(' + angle + 'rad); '
                + '-o-transform: rotate(' + angle + 'rad); '  
@@ -331,8 +330,8 @@ function Slider(options){
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
     if (( e.target !== self.div_oCircle) && (e.target !== self.div_oCircleHover) && (e.target !== self.div_oCircleHoverRight)) {return;}
     // find mouse coordinates
-    var x = e.pageX;
-    var y = e.pageY;
+    var x = e.clientX;
+    var y = e.clientY;
     moveHandle(x, y);
   }
 
@@ -342,8 +341,8 @@ function Slider(options){
       e = window.event;} 
     if(!self.beingDragged){return;}
     // find mouse coordinates
-    var x = e.pageX;
-    var y = e.pageY;
+    var x = e.clientX;
+    var y = e.clientY;
     moveHandle(x, y); 
   } 
 
@@ -374,8 +373,8 @@ function Slider(options){
     console.log("touchclick");
     var touches = e.changedTouches;      
     // find finger's coordinates
-    var x = e.changedTouches[0].pageX;
-    var y = e.changedTouches[0].pageY;
+    var x = e.changedTouches[0].clientX;
+    var y = e.changedTouches[0].clientY;
     moveHandle(x, y);
   }
   
@@ -387,8 +386,8 @@ function Slider(options){
     //if (!e){ e = window.event;} 
     if( e.target !== self.div_handle) return;
     // find finger coordinates
-    xstart = e.changedTouches[0].pageX;
-    ystart = e.changedTouches[0].pageY;
+    xstart = e.changedTouches[0].clientX;
+    ystart = e.changedTouches[0].clientY;
     
     self.div_handle.addEventListener("touchmove", touchMoveDrag, {passive: true});
     self.div_handle.addEventListener("touchend", touchEnd, {passive: true});
@@ -396,8 +395,8 @@ function Slider(options){
   } 
  
   function touchMoveDrag(e){
-    var x = e.changedTouches[0].pageX;
-    var y = e.changedTouches[0].pageY;
+    var x = e.changedTouches[0].clientX;
+    var y = e.changedTouches[0].clientY;
     moveHandle(x, y);
    
   }
