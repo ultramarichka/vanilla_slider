@@ -52,20 +52,22 @@ function demo(){
 //----------------------------------------------------------------------------
   var valContArr = [];
   var RArr = [170, 140, 110, 80, 50];
-
+  var maxArr = [800, 666, 516, 380, 240];
+  var s = [null, null, null, null, null];
   for (var i = 0; i<5; i++){
     valContArr.push(document.createElement("div"));
     valuesContainer.appendChild(valContArr[i]);
-
+ 
     var options = { container: sliderContainer,
                      R: RArr[i],
-                     max_value: 800,
+                     max_value: maxArr[i],
                      min_value: 0,
-                     step: 1,
+                     step: 100,
                      color: "green",
                      valueContainer: valContArr[i]
     };
-    new Slider(options);
+    s[i] = new Slider(options);
+    console.log("max, min");
   }    
 }
 
@@ -99,8 +101,9 @@ function setDivInTheCenterOfAnotherDiv(div1, div2){
 
 function Slider(options){
 
-  var R = options.R;
   var self = this;
+  self.R = options.R;
+  var R = self.R;
   this.r = R - 20;
   self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ; 
@@ -109,9 +112,12 @@ function Slider(options){
   this.container = options.container;
   self.beingDragged = false;
  
-  var max_value = options.max_value ;
-  var min_value = options.min_value ;
-  var step = options.step;
+  self.max_value = options.max_value ;
+  self.min_value = options.min_value ;
+  self.step = options.step;
+  var max_value = self.max_value ;
+  var min_value = self.min_value  ;
+  var step = self.step ;
   this.psi_step = 2*Math.PI * step /(max_value - min_value) ;
   var a = (max_value - min_value)/(2*Math.PI);
   var b = min_value;
@@ -225,6 +231,7 @@ function Slider(options){
     var styles = 'border: 1px solid #ededed; '
                + 'width: ' + length + 'px; '
                + 'height: 0px; '
+
                + '-moz-transform: rotate(' + angle + 'rad); '
                + '-webkit-transform: rotate(' + angle + 'rad); '
                + '-o-transform: rotate(' + angle + 'rad); '  
@@ -232,6 +239,7 @@ function Slider(options){
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '
+               + '-moz-transform-origin: top left; '
                + 'zIndex: 1; '
                /*to avoid dragability https://www.html5rocks.com/en/tutorials/dnd/basics/*/
                + '-moz-user-select: none; '     
@@ -243,9 +251,10 @@ function Slider(options){
     return self.line;
   } 
   function drawLines(){
-    for (var i = 0; i < 60; i++ ){
-      var angle = i* 2* Math.PI/60;
-      createLineElement(0, R, 2*R, angle);
+    var amountOfLines = Math.round((max_value - min_value)/step);
+    for (var i = 0; i <= amountOfLines; i++ ){
+      var angle = i* 2*Math.PI/amountOfLines;
+      createLineElement(R, R, R, angle);
     }
   }
   drawLines();
