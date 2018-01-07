@@ -136,93 +136,28 @@ function Slider(options){
     this.container.appendChild(valueContainer);
   }
   
-  this.div_slider = document.createElement("div");
+  this.div_sliderCenter = document.createElement("div");
+  this.div_sliderCenter.className = 'slider';
   this.sliderStyles = "position: absolute; "
-                    + "z-index: 0; ";
-                    
-  self.div_slider.setAttribute('style', self.sliderStyles); 
-  self.sliderStyles = self.sliderStyles + setDivInTheCenterOfAnotherDiv(this.container, this.div_slider);
-   self.div_slider.setAttribute('style', self.sliderStyles); 
-  this.container.appendChild(this.div_slider);
+                    + "width: 0px; "
+                    + "height: 0px; ";            
+  self.div_sliderCenter.setAttribute('style', self.sliderStyles); 
+  self.sliderStyles = self.sliderStyles + setDivInTheCenterOfAnotherDiv(this.container, this.div_sliderCenter);
+   self.div_sliderCenter.setAttribute('style', self.sliderStyles); 
+   this.container.appendChild(this.div_sliderCenter);
 
   this.div_oCircle = document.createElement("div");
+  this.div_oCircle.className = 'oCircle';
   self.oCircleStyles  = "position: relative; "
-                      + "z-index: 1; "
                       + "width: " + (2*R) +"px; "
                       + "height: " + (2*R) +"px; "
                       + "border-radius:" + R +"px; "
                       + "background: #d3d3d3; ";
                                        
   self.div_oCircle.setAttribute('style', self.oCircleStyles);
-  self.oCircleStyles = self.oCircleStyles + setDivInTheCenterOfAnotherDiv(this.div_slider, this.div_oCircle);
+  self.oCircleStyles = self.oCircleStyles + setDivInTheCenterOfAnotherDiv(this.div_sliderCenter, this.div_oCircle);
    self.div_oCircle.setAttribute('style', self.oCircleStyles); 
-  this.div_slider.appendChild(this.div_oCircle);
-
-  //used cheating variant of "conic-gradient" via linear-gradient https://stackoverflow.com/a/22859559/8325614
-  //right half-circle hover
-  this.div_oCircleHover = document.createElement("div");
-  self.oCircleHoverStyles  = "width: " + R +"px; "
-                      + "height: " + (2*R) +"px; "
-                      + "border-radius: " + R+"px 0 0 "+R+"px; "
-                      + "-moz-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
-                      + "-webkit-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
-                      + "-o-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
-                      + "-ms-background: linear-gradient(0deg, rgb(0,255,0,0.5), rgb(0,255,0,0) 100px); "
-                      + "z-index: 2; ";
-  self.div_oCircleHover.setAttribute('style', self.oCircleHoverStyles); 
-  this.div_oCircle.appendChild(this.div_oCircleHover);
-  
-  //right half-circle hover
-  this.div_oCircleHoverRight = document.createElement("div");
-  self.oCircleHoverRightStyles  = "width: " + R +"px; "
-                      + "height: " + (2*R) +"px; "
-                      + "right: " +(-R)+"px; "
-                      + "top: " +(-2*R)+"px; "
-                      + "border-radius: 0 "+R+"px "+R+"px 0; "
-                      + "-moz-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
-                      + "-webkit-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
-                      + "-o-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
-                      + "-ms-background: linear-gradient(180deg, rgb(0,255,0,1), rgb(0,255,0,0.5)); "
-                      + "position: relative; "
-                      + "z-index: 3; ";
-  self.div_oCircleHoverRight.setAttribute('style', self.oCircleHoverRightStyles); 
-  this.div_oCircle.appendChild(this.div_oCircleHoverRight);
-
-  //mask
-  self.div_iCircle = document.createElement("div");
-  self.iCircleStyles  = "width: " + (2*r) +"px; "
-                      + "height: " + (2*r) +"px; "
-                      + "border-radius:" + r +"px; "
-                      + "background: #ededed; "
-                      + "left: " +(R-r)+"px; "
-                      + "top: " +(R-r)+"px; "
-                      + "position: absolute; "
-                      + '-moz-user-select: none; '
-                      + '-khtml-user-select: none; '
-                      + '-webkit-user-select: none; '
-                      + 'user-select: none; '
-                      + "z-index: 4; ";
-  self.div_iCircle.setAttribute('style', self.iCircleStyles); 
-  this.div_oCircle.appendChild(this.div_iCircle);
-  // distance to top left corner of div_iCircle from widow origin of coordinates
-  // nice approach from here https://stackoverflow.com/a/33347664/8325614
- 
-
-  this.div_handle = document.createElement("div");
-  self.handleStyles  = "width:" + dh+"px; "
-                      + "height:" + dh +"px; "
-                      + "border-radius:" + dh/2+"px; "
-                      + "background: white; "
-                      + "border: 1px solid #a8a8a8; "
-                      + "position: relative; "
-                      + "z-index: 5; ";
-  self.div_handle.setAttribute('style', self.handleStyles); 
-  this.div_iCircle.appendChild(this.div_handle);
- 
-  this.value = document.createElement("div");
-  this.initValue = fromPsiToValue(fiToPsi(fi0));
-  this.valueTextNode = document.createTextNode("$" + this.initValue);
-  valueContainer.appendChild(this.valueTextNode);  
+  this.div_sliderCenter.appendChild(this.div_oCircle);
 
   //style - draw lines
   //used https://stackoverflow.com/a/5912283/8325614
@@ -239,7 +174,6 @@ function Slider(options){
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '
                + '-moz-transform-origin: top left; '
-               + 'zIndex: 1; '
                /*to avoid dragability https://www.html5rocks.com/en/tutorials/dnd/basics/*/
                + '-moz-user-select: none; '     
                + '-khtml-user-select: none; '
@@ -257,6 +191,43 @@ function Slider(options){
     }
   }
   drawLines();
+
+  //mask
+  self.div_iCircle = document.createElement("div");
+  self.iCircleStyles  = "width: " + (2*r) +"px; "
+                      + "height: " + (2*r) +"px; "
+                      + "border-radius:" + r +"px; "
+                      + "background: #ededed; "
+                      + "left: " +(R-r)+"px; "
+                      + "top: " +(R-r)+"px; "
+                      + "position: absolute; "
+                      + '-moz-user-select: none; '
+                      + '-khtml-user-select: none; '
+                      + '-webkit-user-select: none; '
+                      + 'user-select: none; ';
+  self.div_iCircle.setAttribute('style', self.iCircleStyles); 
+  this.div_oCircle.appendChild(this.div_iCircle);
+  // distance to top left corner of div_iCircle from widow origin of coordinates
+  // nice approach from here https://stackoverflow.com/a/33347664/8325614
+ 
+
+  this.value = document.createElement("div");
+  this.initValue = fromPsiToValue(fiToPsi(fi0));
+  this.valueTextNode = document.createTextNode("$" + this.initValue);
+  valueContainer.appendChild(this.valueTextNode);  
+
+  
+
+  this.div_handle = document.createElement("div");
+  self.handleStyles  = "width:" + dh+"px; "
+                      + "height:" + dh +"px; "
+                      + "border-radius:" + dh/2+"px; "
+                      + "background: white; "
+                      + "border: 1px solid #a8a8a8; "
+                      + "position: relative; ";
+  self.div_handle.setAttribute('style', self.handleStyles); 
+  this.div_iCircle.appendChild(this.div_handle);
+ 
 
 
   self.update = function(fi){
@@ -328,7 +299,7 @@ function Slider(options){
   function click(e){
     if (!e){e = window.event;} 
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
-    if (( e.target !== self.div_oCircle) && (e.target !== self.div_oCircleHover) && (e.target !== self.div_oCircleHoverRight)) {return;}
+    if ( e.target == self.div_iCircle) {return;}
     // find mouse coordinates
     var x = e.clientX;
     var y = e.clientY;
@@ -369,7 +340,7 @@ function Slider(options){
     //??
     if (!e){e = window.event;} 
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
-    if( e.target !== self.div_oCircle || e.target !== self.div_oCircleHover || e.target !== self.div_oCircleHoverRight) return;
+    if( e.target !== self.div_oCircle ) return;
     console.log("touchclick");
     var touches = e.changedTouches;      
     // find finger's coordinates
