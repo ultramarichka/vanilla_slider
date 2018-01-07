@@ -136,28 +136,19 @@ function Slider(options){
     this.container.appendChild(valueContainer);
   }
   
-  this.div_sliderCenter = document.createElement("div");
-  this.div_sliderCenter.className = 'slider';
-  this.sliderStyles = "position: absolute; "
-                    + "width: 0px; "
-                    + "height: 0px; ";            
-  self.div_sliderCenter.setAttribute('style', self.sliderStyles); 
-  self.sliderStyles = self.sliderStyles + setDivInTheCenterOfAnotherDiv(this.container, this.div_sliderCenter);
-   self.div_sliderCenter.setAttribute('style', self.sliderStyles); 
-   this.container.appendChild(this.div_sliderCenter);
-
+ 
   this.div_oCircle = document.createElement("div");
   this.div_oCircle.className = 'oCircle';
-  self.oCircleStyles  = "position: relative; "
+  self.oCircleStyles  = "position: absolute; "
                       + "width: " + (2*R) +"px; "
                       + "height: " + (2*R) +"px; "
                       + "border-radius:" + R +"px; "
                       + "background: #d3d3d3; ";
                                        
   self.div_oCircle.setAttribute('style', self.oCircleStyles);
-  self.oCircleStyles = self.oCircleStyles + setDivInTheCenterOfAnotherDiv(this.div_sliderCenter, this.div_oCircle);
-   self.div_oCircle.setAttribute('style', self.oCircleStyles); 
-  this.div_sliderCenter.appendChild(this.div_oCircle);
+  self.oCircleStyles = self.oCircleStyles + setDivInTheCenterOfAnotherDiv(this.container, this.div_oCircle);
+  self.div_oCircle.setAttribute('style', self.oCircleStyles); 
+  this.container.appendChild(this.div_oCircle);
 
   //style - draw lines
   //used https://stackoverflow.com/a/5912283/8325614
@@ -174,6 +165,9 @@ function Slider(options){
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '
                + '-moz-transform-origin: top left; '
+               + '-webkit-transform-origin: top left; '
+               + '-o-transform-origin: top left; '
+               + '-ms-transform-origin: top left; '
                /*to avoid dragability https://www.html5rocks.com/en/tutorials/dnd/basics/*/
                + '-moz-user-select: none; '     
                + '-khtml-user-select: none; '

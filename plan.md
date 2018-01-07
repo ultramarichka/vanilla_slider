@@ -1,9 +1,9 @@
    crossbrowsers' testing
    profiler test
 
-1. - place values
-2.  lines: AmountOflines = (max - min)/step;
-    !!stop after max
+2. !!stop after max
+
+   !make sure touch events on one slider don’t affect others
 
 3. Add - destructor function
  
