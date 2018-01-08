@@ -108,6 +108,7 @@ function Slider(options){
   this.dh = 24; //#handle size
   this.container = options.container;
   self.beingDragged = false;
+  self.maxFlag = false;
  
   self.max_value = options.max_value ;
   self.min_value = options.min_value ;
@@ -196,6 +197,7 @@ function Slider(options){
                       + '-khtml-user-select: none; '
                       + '-webkit-user-select: none; '
                       + 'user-select: none; ';
+                   //   + 'line-height: unset;';
   self.div_iCircle.setAttribute('style', self.iCircleStyles); 
   this.div_oCircle.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
@@ -276,6 +278,27 @@ function Slider(options){
     self.update(fi);
   }
 
+  function stopHandleAtMax(x, y){
+    //stop handle at value = max
+    var x0 = self.div_iCircle.getBoundingClientRect().left;
+    var y0 = self.div_iCircle.getBoundingClientRect().top;
+    fi = Math.atan2(-(y - y0 - self.r), x - x0 - self.r );
+    
+    var xmax = self.div_iCircle.getBoundingClientRect().left + self.r;
+    var ymax = Math.round(self.div_iCircle.getBoundingClientRect().top - dh/2);
+
+    if(fi == Math.PI/2 ){
+      console.log("kuku");
+      self.maxFlag = true;
+    }
+    if (self.maxFlag && fi < Math.PI/2 && fi > 0){
+      moveHandle(xmax, ymax);
+      self.value = self.max_value;
+      self.valueTextNode.nodeValue = "$"+ self.value ;
+      console.log(self.value , self.max_value);
+    }    
+  }
+
   // -----------CALLBACKS--------------------
   function click(e){
     if (!e){e = window.event;} 
@@ -288,14 +311,13 @@ function Slider(options){
   }
 
   function drag(e){
-    if (!e){
-      console.log(e);
-      e = window.event;} 
+    if (!e){e = window.event;} 
     if(!self.beingDragged){return;}
     // find mouse coordinates
     var x = e.clientX;
     var y = e.clientY;
     moveHandle(x, y); 
+    stopHandleAtMax(x, y);
   } 
 
   function enableDrag(e){
@@ -305,6 +327,7 @@ function Slider(options){
 
   function disableDrag (){
     self.beingDragged = false;
+    self.maxFlag = false;
     window.onmousemove = undefined;
   }
   

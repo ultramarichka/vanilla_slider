@@ -1,9 +1,7 @@
    crossbrowsers' testing
    profiler test
 
-2. !!stop after max
-
-   !make sure touch events on one slider don’t affect others
+2. responsive design
 
 3. Add - destructor function
  
