@@ -109,6 +109,9 @@ function Slider(options){
   this.container = options.container;
   self.beingDragged = false;
   self.maxFlag = false;
+  self.beingMax = false;
+  self.beingO = false;
+  self.oFlag = false;
  
   self.max_value = options.max_value ;
   self.min_value = options.min_value ;
@@ -287,16 +290,35 @@ function Slider(options){
     var xmax = self.div_iCircle.getBoundingClientRect().left + self.r;
     var ymax = Math.round(self.div_iCircle.getBoundingClientRect().top - dh/2);
 
-    if(fi == Math.PI/2 ){
-      console.log("kuku");
+    if(!self.beingMax && fi < Math.PI/2 + 2*psi_step && fi > Math.PI/2){
       self.maxFlag = true;
     }
-    if (self.maxFlag && fi < Math.PI/2 && fi > 0){
+    if (self.maxFlag && fi < Math.PI/2 && fi > -Math.PI){
       moveHandle(xmax, ymax);
       self.value = self.max_value;
       self.valueTextNode.nodeValue = "$"+ self.value ;
-      console.log(self.value , self.max_value);
-    }    
+      self.beingMax = true;
+    } 
+    if (self.beingMax && fi >= Math.PI/2 + 2*psi_step){
+      self.maxFlag = false;
+      self.beingMax = false;
+    } 
+    //for 0 
+    if(!self.beingO && fi < Math.PI/2 && fi > Math.PI/2 - psi_step){
+      self.oFlag = true;
+    }
+    if (self.oFlag && fi > Math.PI/2 && fi < Math.PI){
+      console.log("stop condition");
+      moveHandle(xmax, ymax);
+      self.valueTextNode.nodeValue = "$0" ;
+      self.beingO = true;
+      self.beingMax = true;
+    } 
+    if (self.beingO && fi <= Math.PI/2 - 2*psi_step){
+      self.oFlag = false;
+      self.beingO = false;
+      self.beingMax = false;
+    }     
   }
 
   // -----------CALLBACKS--------------------
@@ -328,6 +350,7 @@ function Slider(options){
   function disableDrag (){
     self.beingDragged = false;
     self.maxFlag = false;
+    self.oFlag = false;
     window.onmousemove = undefined;
   }
   
