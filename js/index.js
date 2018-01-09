@@ -1,13 +1,12 @@
 document.body.onload = demo();
 
 function demo(){
-  var w = document.documentElement.clientWidth - 20;  
-  console.log("w", w, typeof(w));
+  var w = document.documentElement.clientWidth;  
   var parentContainer = document.createElement("div");
   var styles;
   if (w <= 600){
-    styles = "width: " + w + "px; "
-           + "height: " + (w *3/2) + "px; "
+    styles = "width: " + (0.90*w) + "px; "
+           + "height: " + (3/2*0.90*w) + "px; "
            + "background: #ededed; "
            + "position: absolute; ";
   } else {
@@ -89,6 +88,13 @@ function demo(){
   var RArr = [150, 120, 90, 60, 30];
   var maxArr = [800, 666, 516, 380, 240];
   var s = [null, null, null, null, null];
+  var trackwidth = 20;
+
+  if (w <= 600){
+    RArr = RArr.map(function(el){return el*w/440+30});
+    trackwidth = w/(RArr.length*2+8);
+  }
+
   for (var i = 0; i<5; i++){
     valContArr.push(document.createElement("div"));
     valuesContainer.appendChild(valContArr[i]);
@@ -99,7 +105,8 @@ function demo(){
                      min_value: 0,
                      step: 10,
                      color: "green",
-                     valueContainer: valContArr[i]
+                     valueContainer: valContArr[i],
+                     trackwidth: trackwidth,
     };
     s[i] = new Slider(options);
   }    
@@ -138,11 +145,12 @@ function Slider(options){
   var self = this;
   self.R = options.R;
   var R = self.R;
-  this.r = R - 20;
+  if(!options.trackwidth)options.trackwidth=20;
+  this.r = R - options.trackwidth;
   self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ; 
   var dir = 1; //direction of psi: "+1" - clockwise, "-1" - anticlockwise
-  this.dh = 24; //#handle size
+  this.dh = options.trackwidth*1.08; //#handle size
   this.container = options.container;
   self.beingDragged = false;
  
@@ -365,7 +373,6 @@ function Slider(options){
     if (!e){e = window.event;} 
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
     if( e.target !== self.div_oCircle ) return;
-    console.log("touchclick");
     var touches = e.changedTouches;      
     // find finger's coordinates
     var x = e.changedTouches[0].clientX;
