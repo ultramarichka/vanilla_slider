@@ -314,11 +314,10 @@ function Slider(options){
 
   self.dragValidate = function (fi,v){
     // Validate the next update, so that we don't cross the origin
-    var dfi = fi - self.fi;
+    
     var dv = v - self.value;
-    var s = dfi*dv;
-    if (s > 0 && Math.abs(dfi) < Math.PI){
-      fi = Math.PI/2;
+    if(Math.abs(dv)>0.5*(self.max_value - self.min_value)){   
+      fi = self.fi0;
       if( dv > 0 ){
         v = self.min_value;
       } else {
