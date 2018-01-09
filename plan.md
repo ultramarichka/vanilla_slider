@@ -1,11 +1,13 @@
    crossbrowsers' testing
    profiler test
 
-2. responsive design
+1.  !!rewrite stopAtMax function
+ 
+2.  fix - responsive design
+    touch callback on drag oCircle
 
 3. Add - destructor function
  
-   - clean code from the rest linear-gradient cheats - or make it nice
 4. Add colors (draw piece of step size and add for drag/click ?)
    - make mask transparent 
    - gradient background

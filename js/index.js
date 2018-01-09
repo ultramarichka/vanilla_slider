@@ -2,51 +2,89 @@ document.body.onload = demo();
 
 function demo(){
 
+  var w = document.documentElement.clientWidth;  
+  console.log("w", w, typeof(w));
   var parentContainer = document.createElement("div");
-  var styles = "width: 600px; height: 400px; background: #ededed; "
-              + "position: absolute; ";
+  var styles;
+  if (w <= 600){
+    styles = "width: " + w + "px; "
+           + "height: " + (w *3/2) + "px; "
+           + "background: #ededed; "
+           + "position: absolute; ";
+  } else {
+    styles = "width: 600px; height: 400px; background: #ededed; "
+           + "position: absolute; ";
+  }
   parentContainer.setAttribute("style",styles);  //this line is needed -> to set width/height to the div 
   styles = styles + setContainerAtTheCenterOfThePage(parentContainer);
   parentContainer.setAttribute("style",styles); 
   document.body.appendChild(parentContainer);
 
-//-------locate valuesContainer and sliderContainer in table's columns-------
+//-------locate valuesContainer and sliderContainer in table's rows/columns-------
   var table = document.createElement('table');
   var tableStyle = "position: absolute; "
                  + "width: " + parentContainer.style.width +"; "
                  + "height: " + parentContainer.style.height +"; ";
   table.setAttribute("style",tableStyle);
   parentContainer.appendChild(table);
-  var tr = document.createElement('tr');
-  table.appendChild(tr);
 
-  var td1 = document.createElement('td');
-  var td1Style = "width: " + Number(table.style.width.slice(0, table.style.width.length-2))/3 +"px; "
-               + "height: " + table.style.height +"; "
-               + "position: relative; ";
-  td1.setAttribute("style", td1Style);
-  tr.appendChild(td1);
-  
-  var valuesContainer = document.createElement("div");
-  var valuesContainerStyle = "width: " + Number(table.style.width.slice(0, table.style.width.length-2))/3 +"px; "
-               + "height: " + table.style.height +"; "
-               + "position: relative; ";
-  valuesContainer.setAttribute("style", valuesContainerStyle + setDivInTheCenterOfAnotherDiv(td1, valuesContainer));
-  td1.appendChild(valuesContainer);
-
-  var td2 = document.createElement('td');
-  var td2Style = "width: " + 2*Number(table.style.width.slice(0, table.style.width.length-2))/3 +"px; "
-               + "height: " + table.style.height + "; "
-               + "position: relative; ";
-  td2.setAttribute("style", td2Style);
-  tr.appendChild(td2);
  
-  var sliderContainer = document.createElement("div");
-  var sliderContainerStyle = "position: relative; "
-                 + "width: " + 2*Number(table.style.width.slice(0, table.style.width.length-2))/3 + "px; "
-                 + "height: " + table.style.height;
-  sliderContainer.setAttribute("style",sliderContainerStyle);
-  td2.appendChild(sliderContainer);
+  if (w <= 600){
+    var tr1 = document.createElement('tr');
+    var tr1Style = "width: " + table.style.width + "; "
+                 + "height: " + Number(table.style.height.slice(0, table.style.height.length-2))/3 +"px; "
+                 + "position: relative; ";
+    tr1.setAttribute("style", tr1Style);
+    table.appendChild(tr1);
+
+    var valuesContainer = document.createElement("div");
+    var valuesContainerStyle = tr1Style;
+    valuesContainer.setAttribute("style", valuesContainerStyle );
+    tr1.appendChild(valuesContainer);
+
+    var tr2 = document.createElement('tr');
+    var tr2Style = "width: " + table.style.width + "; "
+                 + "height: " + 2*Number(table.style.height.slice(0, table.style.height.length-2))/3 +"px; "
+                 + "position: relative; ";
+    tr2.setAttribute("style", tr2Style);
+    table.appendChild(tr2);
+
+    var sliderContainer = document.createElement("div");
+    var sliderContainerStyle = tr2Style;
+    sliderContainer.setAttribute("style",sliderContainerStyle );
+    tr2.appendChild(sliderContainer);
+  }
+
+  else {
+    var tr = document.createElement('tr');
+    table.appendChild(tr);
+
+    var td1 = document.createElement('td');
+    var td1Style = "width: " + Number(table.style.width.slice(0, table.style.width.length-2))/3 +"px; "
+                 + "height: " + table.style.height +"; "
+                 + "position: relative; ";
+    td1.setAttribute("style", td1Style);
+    tr.appendChild(td1);
+    
+    var valuesContainer = document.createElement("div");
+    var valuesContainerStyle = td1Style;
+    valuesContainer.setAttribute("style", valuesContainerStyle + setDivInTheCenterOfAnotherDiv(td1, valuesContainer));
+    td1.appendChild(valuesContainer);
+
+    var td2 = document.createElement('td');
+    var td2Style = "width: " + 2*Number(table.style.width.slice(0, table.style.width.length-2))/3 +"px; "
+                 + "height: " + table.style.height + "; "
+                 + "position: relative; ";
+    td2.setAttribute("style", td2Style);
+    tr.appendChild(td2);
+   
+    var sliderContainer = document.createElement("div");
+    var sliderContainerStyle = td2Style;
+    sliderContainer.setAttribute("style",sliderContainerStyle);
+    td2.appendChild(sliderContainer);
+  }
+
+  
 //----------------------------------------------------------------------------
   var valContArr = [];
   var RArr = [170, 140, 110, 80, 50];
@@ -378,7 +416,7 @@ function Slider(options){
     xstart = e.changedTouches[0].clientX;
     ystart = e.changedTouches[0].clientY;
     
-    self.div_handle.addEventListener("touchmove", touchMoveDrag, {passive: true});
+    self.div_handle.addEventListener("touchmove", touchMoveDrag, false);
     self.div_handle.addEventListener("touchend", touchEnd, {passive: true});
     self.div_handle.addEventListener("touchcancel", touchCancel, {passive: true});
   } 
@@ -387,18 +425,20 @@ function Slider(options){
     var x = e.changedTouches[0].clientX;
     var y = e.changedTouches[0].clientY;
     moveHandle(x, y);
-   
+    
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   function touchEnd(e){
-    self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: true});
+    self.div_handle.removeEventListener("touchmove", touchMoveDrag, false);
     self.div_handle.removeEventListener("touchend", touchEnd, {passive: true});
     self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   }
 
   function touchCancel(e){
     moveHandle(xstart, ystart);
-    self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: true});
+    self.div_handle.removeEventListener("touchmove", touchMoveDrag, false);
     self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: true});
     self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   }
@@ -416,6 +456,11 @@ function Slider(options){
   
   
   this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: true});
+
+  /*document.body.addEventListener("touchmove", function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+  }, false);*/
 
   /*touch events always target the element where that touch STARTED, while mouse events target 
    the element currently under the mouse cursor.
