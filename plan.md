@@ -1,7 +1,8 @@
    crossbrowsers' testing
    profiler test
 
-1. Add colors (draw piece of step size and add for drag/click ?)
+1. Add colors :
+   - use rotate transform on divs
    - make mask transparent 
    - gradient background
    - check: compatibilities w/other browsers
@@ -12,5 +13,7 @@
 
 4. drag for mobile - remove screen scrolling for horizontal position after vertical(if handle is not dragged)
    -  oCircle - add drag that moves handle to the finger's position
+
+5. clean up the code
 
   
