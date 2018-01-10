@@ -1,6 +1,8 @@
    crossbrowsers' testing
    profiler test
 
+0. set value in the callback to a slider (options = {..., valueCallback: function(){...}}) ..or Slider(options, callback)?
+
 1. Add colors :
    - use rotate transform on divs
    - make mask transparent 
