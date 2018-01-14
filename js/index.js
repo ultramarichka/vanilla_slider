@@ -100,23 +100,20 @@ function demo(){
     valContArr.push(document.createElement("div"));
     valuesContainer.appendChild(valContArr[i]);
 
-    function callbackFactory(){
-       tn[i] =  document.createTextNode("");
-      valContArr[i].appendChild(tn[i]);
-      function updateTn(v) {
-        tn[i].nodeValue = "$" + v;
-      };
-      return updateTn;
-    }
+    tn[i] =  document.createTextNode("");
+    valContArr[i].appendChild(tn[i]);
+
     var options = { container: sliderContainer,
                      R: RArr[i],
                      max_value: maxArr[i],
                      min_value: 0,
                      step: 10,
                      color: "green",
-                     valueCallback: callbackFactory(),
+                     valueCallback: function(v) {
+                       tn[i].nodeValue = "$" + v;
+                     },
                      trackwidth: trackwidth,
-    };
+                  };
     s[i] = new Slider(options);
   }
 }
