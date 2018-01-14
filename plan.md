@@ -1,11 +1,9 @@
    crossbrowsers' testing
    profiler test
 
-0. set value in the callback to a slider (options = {..., valueCallback: function(){...}}) ..or Slider(options, callback)?
-
 1. Add colors :
    - use rotate transform on divs
-   - make mask transparent 
+   - make mask transparent
    - gradient background
    - check: compatibilities w/other browsers
 
@@ -17,5 +15,3 @@
    -  oCircle - add drag that moves handle to the finger's position
 
 5. clean up the code
-
-  

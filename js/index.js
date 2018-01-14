@@ -89,21 +89,22 @@ function demo(){
   var maxArr = [800, 666, 516, 380, 240];
   var s = [null, null, null, null, null];
   var trackwidth = 20;
-
+ var tn = [0,0,0,0,0]; //TODO: cleanup
 
   if (w <= 600){
     RArr = RArr.map(function(el){return el*w/440+30});
     trackwidth = w/(RArr.length*2+8);
   }
 
-  for (var i = 0; i<5; i++){
+  for (let i = 0; i<5; i++){
     valContArr.push(document.createElement("div"));
     valuesContainer.appendChild(valContArr[i]);
+
     function callbackFactory(){
-      var tn =  document.createTextNode("");
-      valContArr[i].appendChild(tn);
+       tn[i] =  document.createTextNode("");
+      valContArr[i].appendChild(tn[i]);
       function updateTn(v) {
-        tn.nodeValue = "$" + v;
+        tn[i].nodeValue = "$" + v;
       };
       return updateTn;
     }
