@@ -96,7 +96,7 @@ function demo(){
     trackwidth = w/(RArr.length*2+8);
   }
 
-  for (let i = 0; i<5; i++){
+  for (let i = 0; i<1; i++){
     valContArr.push(document.createElement("div"));
     valuesContainer.appendChild(valContArr[i]);
 
@@ -194,7 +194,8 @@ function Slider(options){
                       + "width: " + R +"px; "
                       + "height: " + (2*R) +"px; "
                       + "border-radius: " + R+"px 0 0 "+R+"px; "
-                      + "background: green; ";
+                      + "background: skyblue; "
+                      + "opacity: 0.6; ";
   self.divColorLeft.setAttribute('style', self.divColorLeftStyles);
   self.divCenter.appendChild(self.divColorLeft);
 
@@ -206,15 +207,17 @@ function Slider(options){
                       + "background: grey; "
                       + "opacity: 0.8; ";
   self.divLeft.setAttribute('style', self.divLeftStyles);
-  self.divColorLeft.appendChild(self.divLeft);
+  self.divCenter.appendChild(self.divLeft);
 
   self.divColorRight = document.createElement("div");
   self.divColorRightStyles  = "position: absolute; "
                        + "width: " + R +"px; "
                        + "height: " + (2*R) +"px; "
-                       + "left: " + R +"px; "
-                       + "border-radius: 0 "+R+"px "+R+"px 0; "
-                       + "background: green; ";
+                       + "border-radius: " + R+"px 0 0 "+R+"px; "
+                       + "-moz-transform: rotate(180deg); "
+                       + "-moz-transform-origin: right 50%; "
+                       + "background: pink; "
+                       + "opacity: 0.6; ";
    self.divColorRight.setAttribute('style', self.divColorRightStyles);
    self.divCenter.appendChild(self.divColorRight);
 
@@ -222,11 +225,13 @@ function Slider(options){
    self.divRightStyles  = "position: absolute; "
                         + "width: " + R +"px; "
                         + "height: " + (2*R) +"px; "
-                        + "border-radius: 0 "+R+"px "+R+"px 0; "
-                        + "background: grey; "
-                        + "opacity: 0.8; ";
+                        + "border-radius: " + R+"px 0 0 "+R+"px; "
+                        + "-moz-transform: rotate(180deg); "
+                        + "-moz-transform-origin: right 50%; "
+                        + "background: yellow; "
+                        + "opacity: 0.6; ";
   self.divRight.setAttribute('style', self.divRightStyles);
-  self.divColorRight.appendChild(self.divRight);
+  self.divCenter.appendChild(self.divRight);
 
   //style - draw lines
   //used https://stackoverflow.com/a/5912283/8325614
@@ -241,7 +246,7 @@ function Slider(options){
                + '-ms-transform: rotate(' + angle + 'rad); '
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
-               + 'left: ' + (x-R) + 'px; '
+               + 'left: ' + x + 'px; '
                + '-moz-transform-origin: top left; '
                + '-webkit-transform-origin: top left; '
                + '-o-transform-origin: top left; '
@@ -254,7 +259,7 @@ function Slider(options){
     self.line.setAttribute('style', styles);
     self.divRight.appendChild(self.line);
     return self.line;
-  }
+  }5
   function drawLines(){
     var amountOfLines = Math.round((max_value - min_value)/step);
     for (var i = 0; i <= amountOfLines; i++ ){
@@ -270,7 +275,7 @@ function Slider(options){
                       + "height: " + (2*r) +"px; "
                       + "border-radius:" + r +"px; "
                       + "background: #ededed; "
-                      + "left: " +(-r)+"px; "
+                      + "left: " +(R-r)+"px; "
                       + "top: " +(R-r)+"px; "
                       + "position: absolute; "
                       + '-moz-user-select: none; '
@@ -287,21 +292,39 @@ function Slider(options){
   self.handleStyles  = "width:" + dh+"px; "
                       + "height:" + dh +"px; "
                       + "border-radius:" + dh/2+"px; "
-                      + "background: white; "
+                      + "background: red; "
                       + "border: 1px solid #a8a8a8; "
                       + "position: relative; ";
   self.div_handle.setAttribute('style', self.handleStyles);
   this.div_iCircle.appendChild(this.div_handle);
 
-
+  Math.degrees = function(radians) {
+    return radians * 180 / Math.PI;
+  }
 
   self.update = function(fi, v){
+
     var styles = self.handleStyles
-                + 'left: ' + (r + (r+(R-r)/2)*Math.cos(fi) - dh/2) +"px; "
-                + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi) - dh/2) +"px; ";
-
+                + 'left: ' + (r + (r+(R-r)/2)*Math.cos(fi - Math.PI) - dh/2) +"px; "
+                + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi -Math.PI) - dh/2) +"px; ";
     self.div_handle.setAttribute('style', styles);
+    var psi = fiToPsi(fi);
+    console.log(psi);
+    console.log("fi-fi0", Math.degrees(fi-fi0));
+    var divRightStylesRot = self.divRightStyles
+                          + '-moz-transform: rotate('+ Math.degrees(-fi-fi0) + 'deg); ';
+    self.divRight.setAttribute('style', divRightStylesRot);
+    /*
 
+    var styles = self.handleStyles
+               + '-moz-transform: translate('+ (r - dh/2) +'px, ' + (-dh) +'px); ';
+    var left = (r + (r+(R-r)/2)*Math.cos(fi) - dh/2);
+    var top = (r - (r+(R-r)/2)*Math.sin(fi) - dh/2);
+    var stylesMove = '-moz-transform: translate('+ left +'px, ' + top +'px); ';
+              // + '-moz-transform: rotate(45deg); '
+              // + '-moz-transform-origin: '+ r +'px '+ r +'px); ';
+    self.div_handle.setAttribute('style', styles + stylesMove);
+    */
     self.fi = fi;
     self.value = v;
     self.valueCallback(self.value);
