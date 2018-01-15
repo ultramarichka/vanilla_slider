@@ -367,7 +367,7 @@ function Slider(options){
     return [fi, v];
   }
 
-  /*
+
   // -----------CALLBACKS--------------------
   function click(e){
     if (!e){e = window.event;}
@@ -405,7 +405,7 @@ function Slider(options){
   function touchClickStart(e){
     if (!e){e = window.event;}
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
-    if( e.target !== self.div_oCircle ) return;
+    if( e.target !== self.divCenter ) return;
     var touches = e.changedTouches;
     // find finger's coordinates
     var x = e.changedTouches[0].clientX;
@@ -418,7 +418,7 @@ function Slider(options){
   var ystart;
 
   function touchStartDrag(e){
-    self.div_oCircle.removeEventListener("touchstart", touchClickStart, {passive: true});
+    self.divCenter.removeEventListener("touchstart", touchClickStart, {passive: true});
     //if (!e){ e = window.event;}
     if( e.target !== self.div_handle) return;
     // find finger coordinates
@@ -444,7 +444,7 @@ function Slider(options){
   function touchEnd(e){
     self.div_handle.removeEventListener("touchmove", touchMoveDrag, false);
     self.div_handle.removeEventListener("touchend", touchEnd, {passive: true});
-    self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+    self.divCenter.addEventListener("touchstart", touchClickStart, {passive: true});
   }
 
   function touchCancel(e){
@@ -452,23 +452,23 @@ function Slider(options){
     self.update(FiV[0],FiV[1]);
     self.div_handle.removeEventListener("touchmove", touchMoveDrag, false);
     self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: true});
-    self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+    self.divCenter.addEventListener("touchstart", touchClickStart, {passive: true});
   }
-  */
+
   // -----------ATTACH CALLBACKS------------
-  /*
-  this.div_oCircle.onclick = click;
+
+  self.divCenter.onclick = click;
   this.div_handle.onmousedown = enableDrag;
 
   window.onmouseup = disableDrag;
 
   // -----------ATTACH TOUCH CALLBACKS------------
 
-  this.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
+  self.divCenter.addEventListener("touchstart", touchClickStart, {passive: true});
 
 
   this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: true});
-  */
+
   /*document.body.addEventListener("touchmove", function(event) {
       event.preventDefault();
       event.stopPropagation();
