@@ -7,6 +7,8 @@
    - gradient background
    - check: compatibilities w/other browsers
 
+2. add setValue getValue
+
 2.  touchcancel - rewrite callback
 
 3. Add - destructor function

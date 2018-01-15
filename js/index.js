@@ -18,7 +18,7 @@ function demo(){
   parentContainer.setAttribute("style",styles);
   document.body.appendChild(parentContainer);
 
-//-------locate valuesContainer and sliderContainer in table's columns-------
+  //-------locate valuesContainer and sliderContainer in table's columns-------
   var table = document.createElement('table');
   var tableStyle = "position: absolute; "
                  + "width: " + parentContainer.style.width +"; "
@@ -66,7 +66,7 @@ function demo(){
 
     var valuesContainer = document.createElement("div");
     var valuesContainerStyle = td1Style;
-    valuesContainer.setAttribute("style", valuesContainerStyle + setDivInTheCenterOfAnotherDiv(td1, valuesContainer));
+    valuesContainer.setAttribute("style", valuesContainerStyle + setDiv2InTheCenterOfDiv1(td1, valuesContainer));
     td1.appendChild(valuesContainer);
 
     var td2 = document.createElement('td');
@@ -83,7 +83,7 @@ function demo(){
   }
 
 
-//----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   var valContArr = [];
   var RArr = [150, 120, 90, 60, 30];
   var maxArr = [800, 666, 516, 380, 240];
@@ -131,7 +131,7 @@ function setContainerAtTheCenterOfThePage(div2){
                + "-ms-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); " ;
 }
 
-function setDivInTheCenterOfAnotherDiv(div1, div2){
+function setDiv2InTheCenterOfDiv1(div1, div2){
   //!works only if width & height of two divs are set in px!
   var div1HalfWidth = Number(div1.style.width.slice(0, div1.style.width.length -2))/2;
   var div1HalfHeight = Number(div1.style.height.slice(0, div1.style.height.length -2))/2;
@@ -178,19 +178,55 @@ function Slider(options){
   var fi0 = self.fi0;
   var psi_step = self.psi_step;
 
-
-  this.div_oCircle = document.createElement("div");
-  this.div_oCircle.className = 'oCircle';
-  self.oCircleStyles  = "position: absolute; "
+  self.divCenter = document.createElement("div");
+  self.divCenterStyles  = "position: absolute; "
                       + "width: " + (2*R) +"px; "
                       + "height: " + (2*R) +"px; "
-                      + "border-radius:" + R +"px; "
-                      + "background: #d3d3d3; ";
+                      + "border-radius: " + R + "px; ";
+  self.divCenter.setAttribute('style', self.divCenterStyles);
+  self.divCenterStyles = self.divCenterStyles + setDiv2InTheCenterOfDiv1(self.container, self.divCenter);
+  self.divCenter.setAttribute('style', self.divCenterStyles);
+  self.container.appendChild(self.divCenter);
 
-  self.div_oCircle.setAttribute('style', self.oCircleStyles);
-  self.oCircleStyles = self.oCircleStyles + setDivInTheCenterOfAnotherDiv(this.container, this.div_oCircle);
-  self.div_oCircle.setAttribute('style', self.oCircleStyles);
-  this.container.appendChild(this.div_oCircle);
+
+  self.divColorLeft = document.createElement("div");
+  self.divColorLeftStyles  = "position: absolute; "
+                      + "width: " + R +"px; "
+                      + "height: " + (2*R) +"px; "
+                      + "border-radius: " + R+"px 0 0 "+R+"px; "
+                      + "background: green; ";
+  self.divColorLeft.setAttribute('style', self.divColorLeftStyles);
+  self.divCenter.appendChild(self.divColorLeft);
+
+  self.divLeft = document.createElement("div");
+  self.divLeftStyles  = "position: absolute; "
+                      + "width: " + R +"px; "
+                      + "height: " + (2*R) +"px; "
+                      + "border-radius: " + R+"px 0 0 "+R+"px; "
+                      + "background: grey; "
+                      + "opacity: 0.8; ";
+  self.divLeft.setAttribute('style', self.divLeftStyles);
+  self.divColorLeft.appendChild(self.divLeft);
+
+  self.divColorRight = document.createElement("div");
+  self.divColorRightStyles  = "position: absolute; "
+                       + "width: " + R +"px; "
+                       + "height: " + (2*R) +"px; "
+                       + "left: " + R +"px; "
+                       + "border-radius: 0 "+R+"px "+R+"px 0; "
+                       + "background: green; ";
+   self.divColorRight.setAttribute('style', self.divColorRightStyles);
+   self.divCenter.appendChild(self.divColorRight);
+
+   self.divRight = document.createElement("div");
+   self.divRightStyles  = "position: absolute; "
+                        + "width: " + R +"px; "
+                        + "height: " + (2*R) +"px; "
+                        + "border-radius: 0 "+R+"px "+R+"px 0; "
+                        + "background: grey; "
+                        + "opacity: 0.8; ";
+  self.divRight.setAttribute('style', self.divRightStyles);
+  self.divColorRight.appendChild(self.divRight);
 
   //style - draw lines
   //used https://stackoverflow.com/a/5912283/8325614
@@ -205,7 +241,7 @@ function Slider(options){
                + '-ms-transform: rotate(' + angle + 'rad); '
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
-               + 'left: ' + x + 'px; '
+               + 'left: ' + (x-R) + 'px; '
                + '-moz-transform-origin: top left; '
                + '-webkit-transform-origin: top left; '
                + '-o-transform-origin: top left; '
@@ -216,7 +252,7 @@ function Slider(options){
                + '-webkit-user-select: none; '
                + 'user-select: none; ';
     self.line.setAttribute('style', styles);
-    self.div_oCircle.appendChild(self.line);
+    self.divRight.appendChild(self.line);
     return self.line;
   }
   function drawLines(){
@@ -234,16 +270,15 @@ function Slider(options){
                       + "height: " + (2*r) +"px; "
                       + "border-radius:" + r +"px; "
                       + "background: #ededed; "
-                      + "left: " +(R-r)+"px; "
+                      + "left: " +(-r)+"px; "
                       + "top: " +(R-r)+"px; "
                       + "position: absolute; "
                       + '-moz-user-select: none; '
                       + '-khtml-user-select: none; '
                       + '-webkit-user-select: none; '
                       + 'user-select: none; ';
-                   //   + 'line-height: unset;';
   self.div_iCircle.setAttribute('style', self.iCircleStyles);
-  this.div_oCircle.appendChild(this.div_iCircle);
+  self.divRight.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
   // nice approach from here https://stackoverflow.com/a/33347664/8325614
 
@@ -332,6 +367,7 @@ function Slider(options){
     return [fi, v];
   }
 
+  /*
   // -----------CALLBACKS--------------------
   function click(e){
     if (!e){e = window.event;}
@@ -418,9 +454,9 @@ function Slider(options){
     self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: true});
     self.div_oCircle.addEventListener("touchstart", touchClickStart, {passive: true});
   }
-
+  */
   // -----------ATTACH CALLBACKS------------
-
+  /*
   this.div_oCircle.onclick = click;
   this.div_handle.onmousedown = enableDrag;
 
@@ -432,11 +468,11 @@ function Slider(options){
 
 
   this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: true});
-
+  */
   /*document.body.addEventListener("touchmove", function(event) {
       event.preventDefault();
       event.stopPropagation();
-  }, false);*/
+   }, false);*/
 
   /*touch events always target the element where that touch STARTED, while mouse events target
    the element currently under the mouse cursor.
