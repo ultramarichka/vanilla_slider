@@ -304,13 +304,30 @@ function Slider(options){
 
   function makeDivTransparent(div, divStyle, v){
     var str = div.style.transform;
-    var res = str.split('(')[1];
+    let res = str.split('(')[1];
       res = res.split(')')[0];
       var i = res.search(/\D/);
       res = res.slice(0, i);
     if(res >= 360 || v == self.max_value){
-      divStyle = divStyle + "opacity: 0; ";
-      div.setAttribute('style', divStyle);
+      style = style  + "opacity: 0; ";
+      div.setAttribute('style', style);
+    }
+  }
+
+  function rotateDivs(fi, v){
+    //rotate divRight with #handle
+    var psi = fiToPsi(fi);
+    var style  = self.divRightStyles
+             + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
+    self.divRight.setAttribute('style', style);
+
+    makeDivTransparent(self.divRight, self.divRightStyles, v);
+
+    if (psi >= Math.PI){
+      style = self.divLeftStyles
+               + '-moz-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
+               + "-moz-transform-origin: right 50%; ";
+      self.divLeft.setAttribute('style', style);
     }
   }
 
@@ -321,14 +338,7 @@ function Slider(options){
                 + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi) - dh/2) +"px; ";
     self.div_handle.setAttribute('style', styles);
 
-    //rotate divRight with #handle
-    var psi = fiToPsi(fi);
-    var divRightStylesRot = self.divRightStyles
-                          + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
-    self.divRight.setAttribute('style', divRightStylesRot);
-    console.log("rotate = ", self.divRight.style.transform);
-
-    makeDivTransparent(self.divRight, divRightStylesRot, v);
+    rotateDivs(fi, v);
 
     self.fi = fi;
     self.value = v;
