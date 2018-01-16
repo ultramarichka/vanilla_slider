@@ -96,7 +96,7 @@ function demo(){
     trackwidth = w/(RArr.length*2+8);
   }
 
-  for (let i = 0; i<1; i++){
+  for (let i = 0; i<5; i++){
     valContArr.push(document.createElement("div"));
     valuesContainer.appendChild(valContArr[i]);
 
@@ -195,7 +195,7 @@ function Slider(options){
                       + "height: " + (2*R) +"px; "
                       + "border-radius: " + R+"px 0 0 "+R+"px; "
                       + "background: skyblue; "
-                      + "opacity: 0.6; ";
+                      + "opacity: 1.0; ";
   self.divColorLeft.setAttribute('style', self.divColorLeftStyles);
   self.divCenter.appendChild(self.divColorLeft);
 
@@ -204,8 +204,8 @@ function Slider(options){
                       + "width: " + R +"px; "
                       + "height: " + (2*R) +"px; "
                       + "border-radius: " + R+"px 0 0 "+R+"px; "
-                      + "background: grey; "
-                      + "opacity: 0.8; ";
+                      + "background: #d3d3d3; "
+                      + "opacity: 1.0; ";
   self.divLeft.setAttribute('style', self.divLeftStyles);
   self.divCenter.appendChild(self.divLeft);
 
@@ -216,8 +216,8 @@ function Slider(options){
                        + "border-radius: " + R+"px 0 0 "+R+"px; "
                        + "-moz-transform: rotate(180deg); "
                        + "-moz-transform-origin: right 50%; "
-                       + "background: pink; "
-                       + "opacity: 0.6; ";
+                       + "background: skyblue; "
+                       + "opacity: 1.0; ";
    self.divColorRight.setAttribute('style', self.divColorRightStyles);
    self.divCenter.appendChild(self.divColorRight);
 
@@ -228,8 +228,8 @@ function Slider(options){
                         + "border-radius: " + R+"px 0 0 "+R+"px; "
                         + "-moz-transform: rotate(180deg); "
                         + "-moz-transform-origin: right 50%; "
-                        + "background: yellow; "
-                        + "opacity: 0.6; ";
+                        + "background: #d3d3d3; "
+                        + "opacity: 1.0; ";
   self.divRight.setAttribute('style', self.divRightStyles);
   self.divCenter.appendChild(self.divRight);
 
@@ -292,7 +292,7 @@ function Slider(options){
   self.handleStyles  = "width:" + dh+"px; "
                       + "height:" + dh +"px; "
                       + "border-radius:" + dh/2+"px; "
-                      + "background: red; "
+                      + "background: white; "
                       + "border: 1px solid #a8a8a8; "
                       + "position: relative; ";
   self.div_handle.setAttribute('style', self.handleStyles);
