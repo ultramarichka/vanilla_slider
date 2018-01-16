@@ -177,7 +177,6 @@ function Slider(options){
   var fi = self.fi;
   var fi0 = self.fi0;
   var psi_step = self.psi_step;
-  var flag = false;
 
   self.divCenter = document.createElement("div");
   self.divCenterStyles  = "position: absolute; "
@@ -303,16 +302,15 @@ function Slider(options){
     return radians * 180 / Math.PI;
   }
 
-  function makeDivTransparent(div, divStyle){
+  function makeDivTransparent(div, divStyle, v){
     var str = div.style.transform;
     var res = str.split('(')[1];
       res = res.split(')')[0];
       var i = res.search(/\D/);
       res = res.slice(0, i);
-    if(res >= 360 || flag){
+    if(res >= 360 || v == self.max_value){
       divStyle = divStyle + "opacity: 0; ";
       div.setAttribute('style', divStyle);
-      flag = true;
     }
   }
 
@@ -328,9 +326,9 @@ function Slider(options){
     var divRightStylesRot = self.divRightStyles
                           + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
     self.divRight.setAttribute('style', divRightStylesRot);
-    console.log("rotate(540deg)", self.divRight.style.transform);
+    console.log("rotate = ", self.divRight.style.transform);
 
-    makeDivTransparent(self.divRight, divRightStylesRot);
+    makeDivTransparent(self.divRight, divRightStylesRot, v);
 
     self.fi = fi;
     self.value = v;
