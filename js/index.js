@@ -90,6 +90,7 @@ function demo(){
   var s = [null, null, null, null, null];
   var trackwidth = 20;
  var tn = [0,0,0,0,0]; //TODO: cleanup
+  var colors = ["#c9c9ff", "skyblue", "#9CD9B1", "pink", "#D9B19C"];
 
   if (w <= 600){
     RArr = RArr.map(function(el){return el*w/440+30});
@@ -108,11 +109,11 @@ function demo(){
                      max_value: maxArr[i],
                      min_value: 0,
                      step: 10,
-                     color: "green",
                      valueCallback: function(v) {
                        tn[i].nodeValue = "$" + v;
                      },
                      trackwidth: trackwidth,
+                     color: colors[i]
                   };
     s[i] = new Slider(options);
   }
@@ -177,6 +178,7 @@ function Slider(options){
   var fi = self.fi;
   var fi0 = self.fi0;
   var psi_step = self.psi_step;
+  self.color = options.color;
 
   self.divCenter = document.createElement("div");
   self.divCenterStyles  = "position: absolute; "
@@ -194,8 +196,8 @@ function Slider(options){
                       + "width: " + R +"px; "
                       + "height: " + (2*R) +"px; "
                       + "border-radius: " + R+"px 0 0 "+R+"px; "
-                      + "background: skyblue; "
-                      + "opacity: 1.0; ";
+                      + "background: " + self.color + "; "
+                      + "opacity: 0.9; ";
   self.divColorLeft.setAttribute('style', self.divColorLeftStyles);
   self.divCenter.appendChild(self.divColorLeft);
 
@@ -216,8 +218,8 @@ function Slider(options){
                        + "border-radius: " + R+"px 0 0 "+R+"px; "
                        + "-moz-transform: rotate(180deg); "
                        + "-moz-transform-origin: right 50%; "
-                       + "background: skyblue; "
-                       + "opacity: 1.0; ";
+                       + "background: " + self.color + "; "
+                       + "opacity: 0.9; ";
    self.divColorRight.setAttribute('style', self.divColorRightStyles);
    self.divCenter.appendChild(self.divColorRight);
 
