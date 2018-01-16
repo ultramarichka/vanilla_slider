@@ -177,6 +177,7 @@ function Slider(options){
   var fi = self.fi;
   var fi0 = self.fi0;
   var psi_step = self.psi_step;
+  var flag = false;
 
   self.divCenter = document.createElement("div");
   self.divCenterStyles  = "position: absolute; "
@@ -257,7 +258,7 @@ function Slider(options){
                + '-webkit-user-select: none; '
                + 'user-select: none; ';
     self.line.setAttribute('style', styles);
-    self.divRight.appendChild(self.line);
+    self.divCenter.appendChild(self.line);
     return self.line;
   }5
   function drawLines(){
@@ -283,7 +284,7 @@ function Slider(options){
                       + '-webkit-user-select: none; '
                       + 'user-select: none; ';
   self.div_iCircle.setAttribute('style', self.iCircleStyles);
-  self.divRight.appendChild(this.div_iCircle);
+  self.divCenter.appendChild(this.div_iCircle);
   // distance to top left corner of div_iCircle from widow origin of coordinates
   // nice approach from here https://stackoverflow.com/a/33347664/8325614
 
@@ -302,29 +303,35 @@ function Slider(options){
     return radians * 180 / Math.PI;
   }
 
+  function makeDivTransparent(div, divStyle){
+    var str = div.style.transform;
+    var res = str.split('(')[1];
+      res = res.split(')')[0];
+      var i = res.search(/\D/);
+      res = res.slice(0, i);
+    if(res >= 360 || flag){
+      divStyle = divStyle + "opacity: 0; ";
+      div.setAttribute('style', divStyle);
+      flag = true;
+    }
+  }
+
   self.update = function(fi, v){
 
     var styles = self.handleStyles
-                + 'left: ' + (r + (r+(R-r)/2)*Math.cos(fi - Math.PI) - dh/2) +"px; "
-                + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi -Math.PI) - dh/2) +"px; ";
+                + 'left: ' + (r + (r+(R-r)/2)*Math.cos(fi) - dh/2) +"px; "
+                + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi) - dh/2) +"px; ";
     self.div_handle.setAttribute('style', styles);
-    var psi = fiToPsi(fi);
-    console.log(psi);
-    console.log("fi-fi0", Math.degrees(fi-fi0));
-    var divRightStylesRot = self.divRightStyles
-                          + '-moz-transform: rotate('+ Math.degrees(-fi-fi0) + 'deg); ';
-    self.divRight.setAttribute('style', divRightStylesRot);
-    /*
 
-    var styles = self.handleStyles
-               + '-moz-transform: translate('+ (r - dh/2) +'px, ' + (-dh) +'px); ';
-    var left = (r + (r+(R-r)/2)*Math.cos(fi) - dh/2);
-    var top = (r - (r+(R-r)/2)*Math.sin(fi) - dh/2);
-    var stylesMove = '-moz-transform: translate('+ left +'px, ' + top +'px); ';
-              // + '-moz-transform: rotate(45deg); '
-              // + '-moz-transform-origin: '+ r +'px '+ r +'px); ';
-    self.div_handle.setAttribute('style', styles + stylesMove);
-    */
+    //rotate divRight with #handle
+    var psi = fiToPsi(fi);
+    var divRightStylesRot = self.divRightStyles
+                          + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
+    self.divRight.setAttribute('style', divRightStylesRot);
+    console.log("rotate(540deg)", self.divRight.style.transform);
+
+    makeDivTransparent(self.divRight, divRightStylesRot);
+
     self.fi = fi;
     self.value = v;
     self.valueCallback(self.value);
