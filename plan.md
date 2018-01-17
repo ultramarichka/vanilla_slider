@@ -6,8 +6,6 @@
    - gradient background
    - lines behind colors
 
-   bug-color at position v=vmax/vmin (appear color at psi = 180)
-
    write function that adds prefixes
 
 2. add setValue getValue

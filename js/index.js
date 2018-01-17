@@ -228,7 +228,7 @@ function Slider(options){
                        + "-ms-transform-origin: right 50%; "
                        + "transform-origin: right 50%; "
                        + "background: " + self.color + "; "
-                       + "opacity: 0.9; ";
+                       + "opacity: 1.0; ";
    self.divColorRight.setAttribute('style', self.divColorRightStyles);
    self.divCenter.appendChild(self.divColorRight);
 
@@ -338,30 +338,41 @@ function Slider(options){
   function rotateDivs(fi, v){
     //rotate divRight with #handle
     var psi = fiToPsi(fi);
-    var style  = self.divRightStyles
-             + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
-             + '-webkit-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
-             + '-ms-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
-             + '-o-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
-             + 'transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
-    self.divRight.setAttribute('style', style);
+    if (psi >= 0){
+      var style  = self.divRightStyles
+               + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+               + '-webkit-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+               + '-ms-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+               + '-o-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+               + 'transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
+      self.divRight.setAttribute('style', style);
+    }
 
     makeDivTransparent(self.divRight, self.divRightStyles, v);
 
-    if (psi >= Math.PI){
-      style = self.divLeftStyles
-               + '-moz-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
-               + '-webkit-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
-               + '-ms-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
-               + '-o-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
-               + 'transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
-               + "-moz-transform-origin: right 50%; "
-               + "-webkit-transform-origin: right 50%; "
-               + "-o-transform-origin: right 50%; "
-               + "-ms-transform-origin: right 50%; "
-               + "transform-origin: right 50%; ";
-      self.divLeft.setAttribute('style', style);
+    var angle = '0';
+    if (psi > Math.PI){
+      angle = Math.degrees(psi - Math.PI);
+      angle = angle.toString();
     }
+    if (v == self.min_value){
+      angle = '0';
+    }
+    if (v == self.max_value){
+      angle = '180';
+    }
+    style = self.divLeftStyles
+             + '-moz-transform: rotate('+ angle + 'deg); '
+             + '-webkit-transform: rotate('+ angle + 'deg); '
+             + '-ms-transform: rotate('+ angle + 'deg); '
+             + '-o-transform: rotate('+ angle + 'deg); '
+             + 'transform: rotate('+ angle + 'deg); '
+             + "-moz-transform-origin: right 50%; "
+             + "-webkit-transform-origin: right 50%; "
+             + "-o-transform-origin: right 50%; "
+             + "-ms-transform-origin: right 50%; "
+             + "transform-origin: right 50%; ";
+    self.divLeft.setAttribute('style', style);
   }
 
   self.update = function(fi, v){
