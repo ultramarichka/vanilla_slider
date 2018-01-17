@@ -129,7 +129,8 @@ function setContainerAtTheCenterOfThePage(div2){
   return style = "-moz-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "
                + "-webkit-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "
                + "-o-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "
-               + "-ms-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); " ;
+               + "-ms-transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); "
+               + "transform: translate(" + (w - div2HalfWidth) +"px, " + (h - div2HalfHeight)+"px); " ;
 }
 
 function setDiv2InTheCenterOfDiv1(div1, div2){
@@ -217,7 +218,15 @@ function Slider(options){
                        + "height: " + (2*R) +"px; "
                        + "border-radius: " + R+"px 0 0 "+R+"px; "
                        + "-moz-transform: rotate(180deg); "
+                       + "-webkit-transform: rotate(180deg); "
+                       + "-o-transform: rotate(180deg); "
+                       + "-ms-transform: rotate(180deg); "
+                       + "transform: rotate(180deg); "
                        + "-moz-transform-origin: right 50%; "
+                       + "-webkit-transform-origin: right 50%; "
+                       + "-o-transform-origin: right 50%; "
+                       + "-ms-transform-origin: right 50%; "
+                       + "transform-origin: right 50%; "
                        + "background: " + self.color + "; "
                        + "opacity: 0.9; ";
    self.divColorRight.setAttribute('style', self.divColorRightStyles);
@@ -229,7 +238,15 @@ function Slider(options){
                         + "height: " + (2*R) +"px; "
                         + "border-radius: " + R+"px 0 0 "+R+"px; "
                         + "-moz-transform: rotate(180deg); "
+                        + "-webkit-transform: rotate(180deg); "
+                        + "-o-transform: rotate(180deg); "
+                        + "-ms-transform: rotate(180deg); "
+                        + "transform: rotate(180deg); "
                         + "-moz-transform-origin: right 50%; "
+                        + "-webkit-transform-origin: right 50%; "
+                        + "-o-transform-origin: right 50%; "
+                        + "-ms-transform-origin: right 50%; "
+                        + "transform-origin: right 50%; "
                         + "background: #d3d3d3; "
                         + "opacity: 1.0; ";
   self.divRight.setAttribute('style', self.divRightStyles);
@@ -246,6 +263,7 @@ function Slider(options){
                + '-webkit-transform: rotate(' + angle + 'rad); '
                + '-o-transform: rotate(' + angle + 'rad); '
                + '-ms-transform: rotate(' + angle + 'rad); '
+               + 'transform: rotate(' + angle + 'rad); '
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '
@@ -253,6 +271,7 @@ function Slider(options){
                + '-webkit-transform-origin: top left; '
                + '-o-transform-origin: top left; '
                + '-ms-transform-origin: top left; '
+               + 'transform-origin: top left; '
                /*to avoid dragability https://www.html5rocks.com/en/tutorials/dnd/basics/*/
                + '-moz-user-select: none; '
                + '-khtml-user-select: none; '
@@ -261,7 +280,7 @@ function Slider(options){
     self.line.setAttribute('style', styles);
     self.divCenter.appendChild(self.line);
     return self.line;
-  }5
+  }
   function drawLines(){
     var amountOfLines = Math.round((max_value - min_value)/step);
     for (var i = 0; i <= amountOfLines; i++ ){
@@ -320,7 +339,11 @@ function Slider(options){
     //rotate divRight with #handle
     var psi = fiToPsi(fi);
     var style  = self.divRightStyles
-             + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
+             + '-moz-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+             + '-webkit-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+             + '-ms-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+             + '-o-transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); '
+             + 'transform: rotate('+ Math.degrees(Math.PI + psi) + 'deg); ';
     self.divRight.setAttribute('style', style);
 
     makeDivTransparent(self.divRight, self.divRightStyles, v);
@@ -328,7 +351,15 @@ function Slider(options){
     if (psi >= Math.PI){
       style = self.divLeftStyles
                + '-moz-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
-               + "-moz-transform-origin: right 50%; ";
+               + '-webkit-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
+               + '-ms-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
+               + '-o-transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
+               + 'transform: rotate('+ Math.degrees(psi - Math.PI) + 'deg); '
+               + "-moz-transform-origin: right 50%; "
+               + "-webkit-transform-origin: right 50%; "
+               + "-o-transform-origin: right 50%; "
+               + "-ms-transform-origin: right 50%; "
+               + "transform-origin: right 50%; ";
       self.divLeft.setAttribute('style', style);
     }
   }
