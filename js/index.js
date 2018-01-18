@@ -90,7 +90,7 @@ function demo(){
   var s = [null, null, null, null, null];
   var trackwidth = 20;
  var tn = [0,0,0,0,0]; //TODO: cleanup
-  var colors = ["#c9c9ff", "skyblue", "#9CD9B1", "pink", "#D9B19C"];
+  var colors = ["#8e44ad", "#2980b9", "#27ae60", "#f39c12", "#e74c3c"];
 
   if (w <= 600){
     RArr = RArr.map(function(el){return el*w/440+30});
@@ -377,6 +377,18 @@ function Slider(options){
 
     //makeDivTransparent(self.divLeft, self.divLeftStyles, v);
   }
+
+  /*
+  Object.defineProperty(self, 'value', {
+    get: function() {
+        return self.value;
+    },
+    set: function(v) {
+      self.value = v;
+      var fi = psiToFi(fromValueToPsi(v));
+      self.update(fi,v);
+    }
+  });*/
 
   self.getValue = function(){
     return self.value;
