@@ -154,12 +154,12 @@ function Slider(options){
   self.R = options.R;
   var R = self.R;
   if(!options.trackwidth)options.trackwidth=20;
-  this.r = R - options.trackwidth;
+  self.r = R - options.trackwidth;
   self.fi0 = Math.PI/2; //at fi = fi0 : psi = 0;
   self.fi = 0 ;
   var dir = 1; //direction of psi: "+1" - clockwise, "-1" - anticlockwise
-  this.dh = options.trackwidth*1.08; //#handle size
-  this.container = options.container;
+  self.dh = options.trackwidth*1.08; //#handle size
+  self.container = options.container;
   self.beingDragged = false;
   self.valueCallback = options.valueCallback;
 
@@ -170,12 +170,12 @@ function Slider(options){
   var min_value = self.min_value  ;
   self.value = self.min_value;
   var step = self.step ;
-  this.psi_step = 2*Math.PI * step /(max_value - min_value) ;
+  self.psi_step = 2*Math.PI * step /(max_value - min_value) ;
   var a = (max_value - min_value)/(2*Math.PI);
   var b = min_value;
 
-  var r = this.r;
-  var dh = this.dh;
+  var r = self.r;
+  var dh = self.dh;
   var fi = self.fi;
   var fi0 = self.fi0;
   var psi_step = self.psi_step;
@@ -198,7 +198,7 @@ function Slider(options){
                       + "height: " + (2*R) +"px; "
                       + "border-radius: " + R+"px 0 0 "+R+"px; "
                       + "background: " + self.color + "; "
-                      + "opacity: 0.9; ";
+                      + "opacity: 1.0; ";
   self.divColorLeft.setAttribute('style', self.divColorLeftStyles);
   self.divCenter.appendChild(self.divColorLeft);
 
@@ -350,6 +350,7 @@ function Slider(options){
 
     makeDivTransparent(self.divRight, self.divRightStyles, v);
 
+
     var angle = '0';
     if (psi > Math.PI){
       angle = Math.degrees(psi - Math.PI);
@@ -373,10 +374,21 @@ function Slider(options){
              + "-ms-transform-origin: right 50%; "
              + "transform-origin: right 50%; ";
     self.divLeft.setAttribute('style', style);
+
+    //makeDivTransparent(self.divLeft, self.divLeftStyles, v);
+  }
+
+  self.getValue = function(){
+    return self.value;
+  }
+
+  self.setValue = function(v){
+    self.value = v;
+    var fi = psiToFi(fromValueToPsi(v));
+    self.update(fi,v);
   }
 
   self.update = function(fi, v){
-
     var styles = self.handleStyles
                 + 'left: ' + (r + (r+(R-r)/2)*Math.cos(fi) - dh/2) +"px; "
                 + 'top: ' + (r - (r+(R-r)/2)*Math.sin(fi) - dh/2) +"px; ";
@@ -396,23 +408,38 @@ function Slider(options){
    */
     var psi = 0;
     if (dir > 0){
-      if(fi0 < fi && fi <= Math.PI){
+      if( fi0 < fi ){
         psi = -dir*fi + dir*fi0 + 2*Math.PI;
-      }
-      if(-Math.PI <= fi && fi <= fi0){
+      }else{
         psi = -dir*fi + dir*fi0;
       }
-    }
-    if (dir < 0){
-      if(-Math.PI<= fi && fi<=fi0){
-        psi = -dir*fi + dir*fi0+2*Math.PI;
-      }
-      if(fi0<fi && fi<=Math.PI){
+    }else{
+      if( fi <= fi0 ){
+        psi = -dir*fi + dir*fi0 +  2*Math.PI;
+      }else{
         psi = -dir*fi + dir*fi0;
       }
     }
     psi = (Math.round(psi/psi_step))*psi_step;
     return psi;
+  }
+
+  function psiToFi(psi){
+    var fi = 0;
+    if (dir > 0){
+      if (psi >= 3*Math.PI/2 && psi <= 2*Math.PI){
+        fi = (psi - dir*fi0 + 2*Math.PI)/(- dir);
+      } else {
+        fi = (psi - dir*fi0)/(-dir) ;
+      }
+    } else {
+      if ( psi >= 0 && psi >= 3*Math.PI/2){
+        fi = (psi - dir*fi0 + 2*Math.PI)/(- dir);
+      } else {
+        fi = (psi - dir*fi0)/(-dir) ;
+      }
+    }
+    return fi;
   }
 
 
@@ -485,6 +512,7 @@ function Slider(options){
 
   //------TOUCH CALLBACKS-------
   function touchClickStart(e){
+
     if (!e){e = window.event;}
     //mask the inner circle https://stackoverflow.com/a/1369080/8325614
     if( e.target !== self.divCenter ) return;
@@ -500,16 +528,17 @@ function Slider(options){
   var ystart;
 
   function touchStartDrag(e){
-    self.divCenter.removeEventListener("touchstart", touchClickStart, {passive: true});
+    e.preventDefault();
+    self.divCenter.removeEventListener("touchstart", touchClickStart, {passive: false});
     //if (!e){ e = window.event;}
     if( e.target !== self.div_handle) return;
     // find finger coordinates
     xstart = e.changedTouches[0].clientX;
     ystart = e.changedTouches[0].clientY;
 
-    self.div_handle.addEventListener("touchmove", touchMoveDrag, false);
-    self.div_handle.addEventListener("touchend", touchEnd, {passive: true});
-    self.div_handle.addEventListener("touchcancel", touchCancel, {passive: true});
+    self.div_handle.addEventListener("touchmove", touchMoveDrag, {passive: false});
+    self.div_handle.addEventListener("touchend", touchEnd, {passive: false});
+    self.div_handle.addEventListener("touchcancel", touchCancel, {passive: false});
   }
 
   function touchMoveDrag(e){
@@ -524,17 +553,17 @@ function Slider(options){
   }
 
   function touchEnd(e){
-    self.div_handle.removeEventListener("touchmove", touchMoveDrag, false);
-    self.div_handle.removeEventListener("touchend", touchEnd, {passive: true});
-    self.divCenter.addEventListener("touchstart", touchClickStart, {passive: true});
+    self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: false});
+    self.div_handle.removeEventListener("touchend", touchEnd, {passive: false});
+    self.divCenter.addEventListener("touchstart", touchClickStart, {passive: false});
   }
 
   function touchCancel(e){
     var FiV=getFiV(xstart, ystart);
     self.update(FiV[0],FiV[1]);
-    self.div_handle.removeEventListener("touchmove", touchMoveDrag, false);
-    self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: true});
-    self.divCenter.addEventListener("touchstart", touchClickStart, {passive: true});
+    self.div_handle.removeEventListener("touchmove", touchMoveDrag, {passive: false});
+    self.div_handle.removeEventListener("touchcancel", touchCancel, {passive: false});
+    self.divCenter.addEventListener("touchstart", touchClickStart, {passive: false});
   }
 
   // -----------ATTACH CALLBACKS------------
@@ -546,10 +575,10 @@ function Slider(options){
 
   // -----------ATTACH TOUCH CALLBACKS------------
 
-  self.divCenter.addEventListener("touchstart", touchClickStart, {passive: true});
+  self.divCenter.addEventListener("touchstart", touchClickStart, {passive: false});
 
 
-  this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: true});
+  this.div_handle.addEventListener("touchstart", touchStartDrag, {passive: false});
 
   /*document.body.addEventListener("touchmove", function(event) {
       event.preventDefault();
