@@ -1,10 +1,21 @@
 document.body.onload = demo();
 
 function demo(){
+  var flag = false;
+  // Mobile: listen for orientation changes
+  window.addEventListener("orientationchange", function() {
+    console.log("screen", screen.orientation, "window", window.orientation);
+    // 0 - portrait view, \90\ = landscape
+    if (screen.orientation == Math.abs(90)){
+      flag = true;
+    }
+  }, false);
+
   var w = document.documentElement.clientWidth;
+
   var parentContainer = document.createElement("div");
   var styles;
-  if (w <= 600){
+  if (w <= 600 && !flag){
     styles = "width: " + (0.90*w) + "px; "
            + "height: " + (3/2*0.90*w) + "px; "
            + "background: #ededed; "
@@ -27,7 +38,7 @@ function demo(){
   parentContainer.appendChild(table);
 
 
-  if (w <= 600){
+  if (w <= 600 && !flag){
     var tr1 = document.createElement('tr');
     var tr1Style = "width: " + table.style.width + "; "
                  + "height: " + Number(table.style.height.slice(0, table.style.height.length-2))/3 +"px; "
@@ -91,6 +102,7 @@ function demo(){
   var trackwidth = 20;
  var tn = [0,0,0,0,0]; //TODO: cleanup
   var colors = ["#8e44ad", "#2980b9", "#27ae60", "#f39c12", "#e74c3c"];
+  var options = [null, null, null, null, null];
 
   if (w <= 600){
     RArr = RArr.map(function(el){return el*w/440+30});
@@ -104,7 +116,7 @@ function demo(){
     tn[i] =  document.createTextNode("");
     valContArr[i].appendChild(tn[i]);
 
-    var options = { container: sliderContainer,
+    options[i] = { container: sliderContainer,
                      R: RArr[i],
                      max_value: maxArr[i],
                      min_value: 0,
@@ -115,7 +127,7 @@ function demo(){
                      trackwidth: trackwidth,
                      color: colors[i]
                   };
-    s[i] = new Slider(options);
+    new Slider(options[i]);
   }
 }
 
